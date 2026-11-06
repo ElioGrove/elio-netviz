@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -49,6 +50,7 @@ export function CanvasToolbar({
   tool: CanvasTool;
   onToolChange: (t: CanvasTool) => void;
 }) {
+  useLocale();
   const [blocksOpen, setBlocksOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const { fitView, zoomTo } = useReactFlow();
@@ -117,8 +119,8 @@ export function CanvasToolbar({
               key={t.id}
               type="button"
               onClick={() => onToolChange(t.id)}
-              title={t.title}
-              aria-label={t.title}
+              title={translate(t.title)}
+              aria-label={translate(t.title)}
               aria-pressed={active}
               className={cn(
                 "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
@@ -135,8 +137,8 @@ export function CanvasToolbar({
         <button
           type="button"
           onClick={() => setBlocksOpen((o) => !o)}
-          title="Blocks (B)"
-          aria-label="Blocks (B)"
+          title={translate("Blocks (B)")}
+          aria-label={translate("Blocks (B)")}
           aria-pressed={blocksOpen}
           className={cn(
             "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",

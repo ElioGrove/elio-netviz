@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { memo, useEffect, useRef, useState } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { useFlowStore, type TextNode } from "@/store/flow-store";
@@ -28,6 +29,7 @@ export function InlineTextEditor({
   onCommit: () => void;
   onCancel: () => void;
 }) {
+  useLocale();
   const ref = useRef<HTMLTextAreaElement>(null);
   const longestLine = value
     .split("\n")
@@ -48,7 +50,7 @@ export function InlineTextEditor({
     <textarea
       ref={ref}
       autoFocus={focusWhenReady}
-      aria-label="Edit text"
+      aria-label={translate("Edit text")}
       value={value}
       rows={Math.max(1, value.split("\n").length)}
       onChange={(event) => onChange(event.target.value)}
@@ -81,6 +83,7 @@ function TextNodeComponent({
   width,
   height,
 }: NodeProps<TextNode>) {
+  useLocale();
   const editingTextNodeId = useFlowStore((state) => state.editingTextNodeId);
   const setEditingTextNode = useFlowStore((state) => state.setEditingTextNode);
   const updateNodeData = useFlowStore((state) => state.updateNodeData);
@@ -114,7 +117,7 @@ function TextNodeComponent({
   }, [data.text, editing]);
 
   const commit = () => {
-    const next = draft || "Text";
+    const next = draft || translate("Text");
     if (next !== data.text) updateNodeData(id, { text: next });
     setEditingTextNode(null);
   };
@@ -130,7 +133,7 @@ function TextNodeComponent({
       )}
       style={style}
       title={
-        !editing && workMode === "design" ? "Double-click to edit" : undefined
+        !editing && workMode === "design" ? translate("Double-click to edit") : undefined
       }
       onDoubleClick={(event) => {
         if (workMode !== "design") return;
@@ -151,7 +154,7 @@ function TextNodeComponent({
         />
       ) : (
         <span className="whitespace-pre-wrap break-words">
-          {data.text || "Text"}
+          {data.text || translate("Text")}
         </span>
       )}
       <CanvasNodeResizer

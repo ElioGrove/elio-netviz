@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "@/ui/icons";
@@ -26,7 +27,9 @@ DialogOverlay.displayName = "DialogOverlay";
 export const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => {
+  useLocale();
+  return (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -40,11 +43,12 @@ export const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none">
         <X className="h-3.5 w-3.5" />
-        <span className="sr-only">Close</span>
+        <span className="sr-only">{translate("Close")}</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>
-));
+);
+});
 DialogContent.displayName = "DialogContent";
 
 export const DialogHeader = ({

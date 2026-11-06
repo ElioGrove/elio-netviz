@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useTheme } from "next-themes";
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 // Figma-style "Page" panel: the only control shown when nothing is
 // selected — the work-area background color of the active page.
 export function PageOptions() {
+  useLocale();
   const bgColor = useFlowStore(
     (s) => s.pages.find((p) => p.id === s.activePageId)?.bgColor
   );
@@ -42,14 +44,14 @@ export function PageOptions() {
         <label
           className="relative block h-5 w-5 shrink-0 cursor-pointer overflow-hidden rounded border border-foreground/20"
           style={{ backgroundColor: value }}
-          title="Page background color"
+          title={translate("Page background color")}
         >
           <input
             type="color"
             value={value}
             onChange={(e) => setPageBackground(e.target.value)}
             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-            aria-label="Page background color"
+            aria-label={translate("Page background color")}
           />
         </label>
         <input
@@ -70,17 +72,17 @@ export function PageOptions() {
           }}
           spellCheck={false}
           className="min-w-0 flex-1 bg-transparent text-xs uppercase tabular-nums text-foreground outline-none placeholder:text-muted-foreground/50"
-          aria-label="Page background hex value"
+          aria-label={translate("Page background hex value")}
         />
         {bgColor && (
           <button
             type="button"
             onClick={() => setPageBackground(undefined)}
             className="rounded-md px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            title="Reset to theme default"
-            aria-label="Reset page background"
+            title={translate("Reset to theme default")}
+            aria-label={translate("Reset page background")}
           >
-            Reset
+            {translate("Reset")}
           </button>
         )}
       </div>
@@ -89,6 +91,7 @@ export function PageOptions() {
 }
 
 export function CanvasOptions() {
+  useLocale();
   const setEdgeColor = useFlowStore((s) => s.setEdgeColor);
   const setEdgeCurveStyle = useFlowStore((s) => s.setEdgeCurveStyle);
   const setEdgeLineStyle = useFlowStore((s) => s.setEdgeLineStyle);
@@ -168,17 +171,17 @@ export function CanvasOptions() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <InspectorSection title="Appearance">
-        <InspectorRow label="Color">
+      <InspectorSection title={translate("Appearance")}>
+        <InspectorRow label={translate("Color")}>
           <PaletteControl
             value={edgeColor}
             includeTransparent={false}
             onChange={setEdgeColor}
           />
         </InspectorRow>
-        <InspectorRow label="Style">
+        <InspectorRow label={translate("Style")}>
           <DropdownControl
-            label="Edge style"
+            label={translate("Edge style")}
             value={edgeLineStyle}
             options={EDGE_LINE_OPTIONS}
             onChange={setEdgeLineStyle}
@@ -190,7 +193,7 @@ export function CanvasOptions() {
           />
         </InspectorRow>
         {(edgeLineStyle === "dashed" || edgeLineStyle === "dotted") && (
-          <InspectorRow label="Spacing">
+          <InspectorRow label={translate("Spacing")}>
             <Slider
               min={2}
               max={20}
@@ -198,16 +201,16 @@ export function CanvasOptions() {
               value={edgeDashGap}
               onChange={(event) => setEdgeDashGap(Number(event.target.value))}
               className="min-w-0 flex-1"
-              aria-label="Edge dash spacing"
+              aria-label={translate("Edge dash spacing")}
             />
             <span className="flex h-7 w-10 shrink-0 items-center justify-end rounded-md bg-input px-1.5 text-[11px] tabular-nums text-foreground">
               {edgeDashGap}
             </span>
           </InspectorRow>
         )}
-        <InspectorRow label="Curve">
+        <InspectorRow label={translate("Curve")}>
           <DropdownControl
-            label="Edge curve"
+            label={translate("Edge curve")}
             value={edgeCurveStyle}
             options={EDGE_CURVE_OPTIONS}
             onChange={setEdgeCurveStyle}
@@ -220,35 +223,35 @@ export function CanvasOptions() {
         </InspectorRow>
       </InspectorSection>
 
-      <InspectorSection title="Label">
-        <InspectorRow label="Text">
+      <InspectorSection title={translate("Label")}>
+        <InspectorRow label={translate("Text")}>
           <Input
             value={edgeLabel ?? ""}
-            placeholder={edgeLabel === undefined ? "Mixed" : "Label"}
+            placeholder={edgeLabel === undefined ? translate("Mixed") : translate("Label")}
             onChange={(event) => setEdgeLabel(event.target.value)}
-            aria-label="Edge label"
+            aria-label={translate("Edge label")}
             className="h-7 min-w-0 flex-1 rounded-md px-2 text-xs"
           />
         </InspectorRow>
-        <InspectorRow label="Text color">
+        <InspectorRow label={translate("Text color")}>
           <PaletteControl
-            label="Text color"
+            label={translate("Text color")}
             value={labelTextColor}
             includeTransparent
             onChange={(value) => setEdgeLabelColor("text", value)}
           />
         </InspectorRow>
-        <InspectorRow label="Background">
+        <InspectorRow label={translate("Background")}>
           <PaletteControl
-            label="Background color"
+            label={translate("Background color")}
             value={labelBgColor}
             includeTransparent
             onChange={(value) => setEdgeLabelColor("bg", value)}
           />
         </InspectorRow>
-        <InspectorRow label="Border">
+        <InspectorRow label={translate("Border")}>
           <PaletteControl
-            label="Border color"
+            label={translate("Border color")}
             value={labelBorderColor}
             includeTransparent
             dropUp
@@ -323,6 +326,7 @@ function DropdownControl<T extends string>({
   onChange: (value: T) => void;
   renderPreview: (value: T) => ReactNode;
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<{
     left: number;
@@ -396,7 +400,7 @@ function DropdownControl<T extends string>({
         )}
       >
         {value ? renderPreview(value) : null}
-        <span className="truncate">{selected?.label ?? "Mixed"}</span>
+        <span className="truncate">{translate(selected?.label ?? "Mixed")}</span>
         <ChevronDown className="ml-auto h-3 w-3 shrink-0 text-muted-foreground" />
       </button>
       {open &&
@@ -405,7 +409,7 @@ function DropdownControl<T extends string>({
           <div
             ref={panelRef}
             role="listbox"
-            aria-label={`${label} options`}
+            aria-label={translate("{label} options", { label })}
             className="fixed z-50 rounded-xl border border-border/60 bg-popover p-1.5 shadow-xl"
             style={position}
           >
@@ -429,7 +433,7 @@ function DropdownControl<T extends string>({
                 <span className="w-10 shrink-0">
                   {renderPreview(option.value)}
                 </span>
-                <span className="truncate">{option.label}</span>
+                <span className="truncate">{translate(option.label)}</span>
                 {option.value === value ? (
                   <Check className="ml-auto h-3.5 w-3.5 text-primary" />
                 ) : null}
@@ -443,7 +447,7 @@ function DropdownControl<T extends string>({
 }
 
 function PaletteControl({
-  label = "Choose color",
+  label = translate("Choose color"),
   value,
   includeTransparent,
   dropUp = false,
@@ -455,6 +459,7 @@ function PaletteControl({
   dropUp?: boolean;
   onChange: (value: string | undefined) => void;
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const selectedPreset = COLOR_PRESETS.find((preset) => preset.hex === value);
@@ -497,9 +502,9 @@ function PaletteControl({
       >
         <ColorSwatch value={value} />
         <span className="truncate tabular-nums">
-          {selectedPreset?.label ??
+          {(selectedPreset ? translate(selectedPreset.label) : undefined) ??
             value?.replace("#", "").toUpperCase() ??
-            "Default"}
+            translate("Default")}
         </span>
         <ChevronDown className="ml-auto h-3 w-3 shrink-0 text-muted-foreground" />
       </button>
@@ -515,8 +520,8 @@ function PaletteControl({
               <button
                 key={preset.id}
                 type="button"
-                title={preset.label}
-                aria-label={preset.label}
+                title={translate(preset.label)}
+                aria-label={translate(preset.label)}
                 onClick={() => pick(preset.hex)}
                 className={cn(
                   "flex h-6 w-6 items-center justify-center rounded-[5px] ring-1 ring-inset ring-foreground/10 transition-transform hover:scale-110",
@@ -539,13 +544,12 @@ function PaletteControl({
                   value && value !== "transparent" ? value : "#64748b",
               }}
             />
-            Custom color
-            <input
+            {translate("Custom color")}<input
               type="color"
               value={value && value !== "transparent" ? value : "#64748b"}
               onChange={(event) => pick(event.target.value)}
               className="sr-only"
-              aria-label="Custom edge color"
+              aria-label={translate("Custom edge color")}
             />
           </label>
         </div>

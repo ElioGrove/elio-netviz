@@ -1,3 +1,4 @@
+import { useLocaleStore } from "../src/i18n";
 import { beforeEach, describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ReactFlowProvider } from "@xyflow/react";
@@ -19,6 +20,9 @@ beforeEach(() => {
     editingTextNodeId: null,
   });
 });
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("TextNodeView", () => {
   test("opens a newly added text node for immediate typing", () => {

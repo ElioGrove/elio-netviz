@@ -21,9 +21,25 @@ Add components like servers, proxies, and databases to a canvas, connect them to
 - Custom blocks with your own icons
 - Duplicate blocks
 - Undo and redo
+- Simplified Chinese by default, with English available in Settings → General → Interface language
 - Dark and light theme
 - Export to image
 - Local save with IndexedDB, no server needed
+
+## 中文与部署
+
+默认使用简体中文，可在「设置 → 通用 → 界面语言」切换到 English；语言偏好自动保存在本机，项目内容不会随语言切换改写。
+
+使用 npm 安装和构建：
+
+```bash
+npm ci
+npm run dev
+# Production output: dist/
+npm run build
+```
+
+支持 Cloudflare 静态托管，也支持放入 elio-hub 的 `apps/netviz/` 子目录。详细方案见 [静态部署说明](docs/deployment.md)。
 
 ## Requirements
 

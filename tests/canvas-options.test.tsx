@@ -1,3 +1,4 @@
+import { useLocaleStore } from "../src/i18n";
 import { beforeEach, describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { CanvasOptions } from "../src/components/canvas-options";
@@ -19,6 +20,9 @@ beforeEach(() => {
     ],
   });
 });
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("CanvasOptions", () => {
   test("uses the inspector layout for edge appearance and labels", () => {

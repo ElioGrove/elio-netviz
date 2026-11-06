@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import { createFlowSnapshot, createShareUrl } from "@/lib/storage";
 import { useFlowStore } from "@/store/flow-store";
@@ -25,6 +26,7 @@ export function ShareProjectDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  useLocale();
   const [share, setShare] = useState<ShareState>({ status: "idle" });
   const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +48,7 @@ export function ShareProjectDialog({
           message:
             error instanceof Error
               ? error.message
-              : "Could not create a share link.",
+              : translate("Could not create a share link."),
         });
       });
     return () => {
@@ -69,18 +71,18 @@ export function ShareProjectDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
           <DialogHeader>
-            <DialogTitle>Share project</DialogTitle>
+            <DialogTitle>{translate("Share project")}</DialogTitle>
             <DialogDescription>
-              Anyone with this link can open an editable copy of the project.
+              {translate("Anyone with this link can open an editable copy of the project.")}
             </DialogDescription>
           </DialogHeader>
           {share.status === "loading" || share.status === "idle" ? (
             <div className="flex h-9 items-center rounded-lg bg-input px-3 text-xs text-muted-foreground">
-              Creating compressed link…
+              {translate("Creating compressed link…")}
             </div>
           ) : share.status === "error" ? (
             <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2.5 text-xs leading-relaxed text-destructive">
-              {share.message}
+              {translate(share.message)}
             </div>
           ) : (
             <>
@@ -90,24 +92,23 @@ export function ShareProjectDialog({
                   readOnly
                   value={share.link}
                   onFocus={(event) => event.currentTarget.select()}
-                  aria-label="Share link"
+                  aria-label={translate("Share link")}
                   className="min-w-0 font-mono text-xs"
                 />
                 <Button onClick={() => void copyLink()}>
-                  {copied ? "Copied" : "Copy link"}
+                  {copied ? translate("Copied") : translate("Copy link")}
                 </Button>
               </div>
               {share.link.length > 50_000 ? (
                 <p className="text-[11px] leading-relaxed text-muted-foreground">
-                  This is a large link because the project contains a lot of
-                  data. Some messaging apps may shorten it.
+                  {translate("This is a large link because the project contains a lot of data. Some messaging apps may shorten it.")}
                 </p>
               ) : null}
             </>
           )}
           <DialogFooter className="grid-cols-1">
             <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Close
+              {translate("Close")}
             </Button>
           </DialogFooter>
       </DialogContent>

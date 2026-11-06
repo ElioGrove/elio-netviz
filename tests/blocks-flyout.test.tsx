@@ -1,8 +1,12 @@
-import { describe, expect, test } from "vitest";
+import { useLocaleStore } from "../src/i18n";
+import { beforeEach, describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ReactFlowProvider } from "@xyflow/react";
 import { BlocksFlyout } from "../src/components/blocks-flyout";
 import { TEMPLATES } from "../src/templates/registry";
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("BlocksFlyout", () => {
   test("separates block sections and softens their stronger names", () => {

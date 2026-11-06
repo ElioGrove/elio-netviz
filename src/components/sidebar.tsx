@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { File, Plus, Search, Trash2 } from "@/ui/icons";
 import { useFlowStore, type Page } from "@/store/flow-store";
@@ -6,6 +7,7 @@ import { LayersPanel } from "./layers-panel";
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {
+  useLocale();
   const [query, setQuery] = useState("");
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-background">
@@ -15,7 +17,7 @@ export function Sidebar() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search…"
+            placeholder={translate("Search…")}
             className="pl-8"
           />
         </div>
@@ -30,6 +32,7 @@ export function Sidebar() {
 }
 
 function PagesSection({ query }: { query: string }) {
+  useLocale();
   const pages = useFlowStore((s) => s.pages);
   const addPage = useFlowStore((s) => s.addPage);
   const q = query.trim().toLowerCase();
@@ -39,12 +42,12 @@ function PagesSection({ query }: { query: string }) {
   return (
     <div className="flex max-h-[40%] shrink-0 flex-col">
       <div className="flex items-center justify-between px-3 py-2">
-        <p className="px-1 text-xs font-semibold text-foreground">Pages</p>
+        <p className="px-1 text-xs font-semibold text-foreground">{translate("Pages")}</p>
         <button
           onClick={() => addPage()}
           className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          title="New page"
-          aria-label="New page"
+          title={translate("New page")}
+          aria-label={translate("New page")}
         >
           <Plus className="h-3.5 w-3.5" />
         </button>
@@ -52,7 +55,7 @@ function PagesSection({ query }: { query: string }) {
       <ul className="min-h-0 overflow-y-auto px-2 pb-2">
         {visible.length === 0 ? (
           <p className="px-2 py-3 text-center text-xs text-muted-foreground/70">
-            No pages match.
+            {translate("No pages match.")}
           </p>
         ) : (
           visible.map((p) => (
@@ -65,6 +68,7 @@ function PagesSection({ query }: { query: string }) {
 }
 
 function PageRow({ page, canDelete }: { page: Page; canDelete: boolean }) {
+  useLocale();
   const activePageId = useFlowStore((s) => s.activePageId);
   const setActivePage = useFlowStore((s) => s.setActivePage);
   const renamePage = useFlowStore((s) => s.renamePage);
@@ -142,8 +146,8 @@ function PageRow({ page, canDelete }: { page: Page; canDelete: boolean }) {
                   deletePage(page.id);
                 }}
                 className="opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-                title="Delete page"
-                aria-label="Delete page"
+                title={translate("Delete page")}
+                aria-label={translate("Delete page")}
               >
                 <Trash2 className="h-3 w-3" />
               </button>

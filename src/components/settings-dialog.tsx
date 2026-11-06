@@ -1,3 +1,4 @@
+import { translate, useLocale, useLocaleStore } from "@/i18n";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import {
@@ -130,6 +131,9 @@ export function SettingsDialog({
   onOpenChange: (v: boolean) => void;
   actions: SettingsActions;
 }) {
+  useLocale();
+  const locale = useLocaleStore((state) => state.locale);
+  const setLocale = useLocaleStore((state) => state.setLocale);
   const [tab, setTab] = useState<TabId>("general");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -175,7 +179,7 @@ export function SettingsDialog({
                   >
                     <Ic className="h-3.5 w-3.5" />
                   </span>
-                  {t.label}
+                  {translate(t.label)}
                 </button>
               );
             })}
@@ -183,57 +187,71 @@ export function SettingsDialog({
           <div className="flex min-w-0 flex-1 flex-col">
             <div className="border-b border-border px-5 py-3.5">
               <DialogTitle className="text-sm font-semibold">
-                {TAB_TITLES[tab]}
+                {translate(TAB_TITLES[tab])}
               </DialogTitle>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-1">
               {tab === "general" && (
                 <>
-                  <SettingsRow label="Theme">
+                  <SettingsRow
+                    label={translate("Interface language")}
+                    description={translate("Choose the language used by the editor.")}
+                  >
+                    <select
+                      aria-label={translate("Interface language")}
+                      value={locale}
+                      onChange={(event) => setLocale(event.target.value === "en" ? "en" : "zh-CN")}
+                      className="h-8 w-52 rounded-lg bg-input px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
+                    >
+                      <option value="zh-CN">简体中文</option>
+                      <option value="en">English</option>
+                    </select>
+                  </SettingsRow>
+                  <SettingsRow label={translate("Theme")}>
                     <Segmented
                       className="w-52"
                       value={(mounted ? theme : undefined) as string}
                       onChange={(v) => setTheme(v)}
                       options={[
-                        { value: "light", label: "Light" },
-                        { value: "dark", label: "Dark" },
-                        { value: "system", label: "System" },
+                        { value: "light", label: translate("Light") },
+                        { value: "dark", label: translate("Dark") },
+                        { value: "system", label: translate("System") },
                       ]}
                     />
                   </SettingsRow>
                   <SettingsRow
-                    label="Motion"
-                    description="System respects your device setting; Full is the authoring override."
+                    label={translate("Motion")}
+                    description={translate("System respects your device setting; Full is the authoring override.")}
                   >
                     <Segmented
                       className="w-52"
                       value={motionPreference}
                       onChange={setMotionPreference}
                       options={[
-                        { value: "system", label: "System" },
-                        { value: "full", label: "Full" },
-                        { value: "reduced", label: "Reduced" },
+                        { value: "system", label: translate("System") },
+                        { value: "full", label: translate("Full") },
+                        { value: "reduced", label: translate("Reduced") },
                       ]}
                     />
                   </SettingsRow>
                   <SettingsRow
-                    label="Canvas toolbar"
-                    description="Floating tools at the bottom of the canvas."
+                    label={translate("Canvas toolbar")}
+                    description={translate("Floating tools at the bottom of the canvas.")}
                   >
                     <Switch
                       checked={showControls}
                       onChange={toggleControls}
-                      label="Canvas toolbar"
+                      label={translate("Canvas toolbar")}
                     />
                   </SettingsRow>
                   <SettingsRow
-                    label="Smart guides"
-                    description="Alignment guides and snapping while dragging."
+                    label={translate("Smart guides")}
+                    description={translate("Alignment guides and snapping while dragging.")}
                   >
                     <Switch
                       checked={showSmartGuides}
                       onChange={toggleSmartGuides}
-                      label="Smart guides"
+                      label={translate("Smart guides")}
                     />
                   </SettingsRow>
                 </>
@@ -241,28 +259,28 @@ export function SettingsDialog({
               {tab === "file" && (
                 <>
                   <SettingsRow
-                    label="Share project"
-                    description="Create a link that opens an editable copy."
+                    label={translate("Share project")}
+                    description={translate("Create a link that opens an editable copy.")}
                   >
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={run(actions.onShare)}
                     >
-                      Share
+                      {translate("Share")}
                     </Button>
                   </SettingsRow>
                   <SettingsRow
-                    label="Save file"
-                    description="Download the whole project as JSON."
+                    label={translate("Save file")}
+                    description={translate("Download the whole project as JSON.")}
                   >
                     <Button variant="outline" size="sm" onClick={run(actions.onSave)}>
-                      Save
+                      {translate("Save")}
                     </Button>
                   </SettingsRow>
                   <SettingsRow
-                    label="Export image"
-                    description="Draw a crop area, then export."
+                    label={translate("Export image")}
+                    description={translate("Draw a crop area, then export.")}
                   >
                     <div className="flex gap-1.5">
                       <Button
@@ -282,27 +300,27 @@ export function SettingsDialog({
                     </div>
                   </SettingsRow>
                   <SettingsRow
-                    label="Import file"
-                    description="Load a previously saved .json project."
+                    label={translate("Import file")}
+                    description={translate("Load a previously saved .json project.")}
                   >
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={run(actions.onImport)}
                     >
-                      Import
+                      {translate("Import")}
                     </Button>
                   </SettingsRow>
                   <SettingsRow
-                    label="Upload image"
-                    description="Place an image on the canvas."
+                    label={translate("Upload image")}
+                    description={translate("Place an image on the canvas.")}
                   >
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={run(actions.onUploadImage)}
                     >
-                      Upload
+                      {translate("Upload")}
                     </Button>
                   </SettingsRow>
                 </>
@@ -310,7 +328,7 @@ export function SettingsDialog({
               {tab === "shortcuts" && (
                 <>
                   {SHORTCUTS.map((s) => (
-                    <SettingsRow key={s.action} label={s.action}>
+                    <SettingsRow key={s.action} label={translate(s.action)}>
                       <div className="flex gap-1">
                         {s.keys.map((k, i) => (
                           <Kbd key={i}>{k}</Kbd>
@@ -323,27 +341,27 @@ export function SettingsDialog({
               {tab === "danger" && (
                 <>
                   <SettingsRow
-                    label="Clear canvas"
-                    description="Remove all nodes, edges, and groups on this page."
+                    label={translate("Clear canvas")}
+                    description={translate("Remove all nodes, edges, and groups on this page.")}
                   >
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={run(actions.onClearCanvas)}
                     >
-                      Clear
+                      {translate("Clear")}
                     </Button>
                   </SettingsRow>
                   <SettingsRow
-                    label="Reset workspace"
-                    description="Wipe everything and start fresh. Cannot be undone."
+                    label={translate("Reset workspace")}
+                    description={translate("Wipe everything and start fresh. Cannot be undone.")}
                   >
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={run(actions.onResetWorkspace)}
                     >
-                      Reset
+                      {translate("Reset")}
                     </Button>
                   </SettingsRow>
                 </>

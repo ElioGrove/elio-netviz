@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import {
   useEffect,
   useRef,
@@ -103,6 +104,7 @@ export function NodeRotationControls({
   rotation: number;
   visible: boolean;
 }) {
+  useLocale();
   const updateNodeData = useFlowStore((state) => state.updateNodeData);
   const updateNodeInternals = useUpdateNodeInternals();
   const frameRef = useRef<number | null>(null);
@@ -187,7 +189,7 @@ export function NodeRotationControls({
           key={corner.key}
           type="button"
           aria-label={`Rotate from ${corner.key.replace("-", " ")} corner`}
-          title="Drag to rotate · Hold Shift to snap"
+          title={translate("Drag to rotate · Hold Shift to snap")}
           className={`nv-rotation-zone nodrag nopan pointer-events-auto absolute z-20 h-5 w-5 touch-none ${corner.position}`}
           onPointerDown={startRotation}
           onPointerMove={rotate}

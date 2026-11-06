@@ -1,8 +1,12 @@
-import { describe, expect, test } from "vitest";
+import { useLocaleStore } from "../src/i18n";
+import { beforeEach, describe, expect, test } from "vitest";
 import { testFile } from "./test-file";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ReactFlowProvider } from "@xyflow/react";
 import { Toolbar } from "../src/components/toolbar";
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("project sharing UI", () => {
   test("keeps only Preview in the top-right navigation", () => {
@@ -28,7 +32,7 @@ describe("project sharing UI", () => {
 
     expect(toolbar).toContain("<Settings className=");
     expect(toolbar).not.toContain("<MoreVertical className=");
-    expect(settings).toContain('label="Share project"');
+    expect(settings).toContain('label={translate("Share project")}');
     expect(settings).toContain("onClick={run(actions.onShare)}");
     expect(settings).not.toContain("<ShareProjectButton");
     expect(toolbar).toContain("<ShareProjectDialog");

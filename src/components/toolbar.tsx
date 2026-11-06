@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -46,6 +47,7 @@ const WORK_MODES: { id: WorkMode; label: string; icon: AppIcon }[] = [
 // Persistence is automatic — projectName lives in the store, which
 // auto-saves to IndexedDB.
 function ProjectTitle() {
+  useLocale();
   const projectName = useFlowStore((s) => s.projectName);
   const setProjectName = useFlowStore((s) => s.setProjectName);
   const [editing, setEditing] = useState(false);
@@ -88,13 +90,13 @@ function ProjectTitle() {
           }}
           style={{ width: `${Math.min(Math.max(draft.length + 3, 8), 48)}ch` }}
           className="pointer-events-auto h-7 rounded-md bg-input px-2 text-center text-[13px] font-medium text-foreground outline-none focus:ring-1 focus:ring-ring"
-          aria-label="Project name"
+          aria-label={translate("Project name")}
         />
       ) : (
         <button
           type="button"
           onDoubleClick={() => setEditing(true)}
-          title="Double-click to rename"
+          title={translate("Double-click to rename")}
           className="pointer-events-auto max-w-72 truncate rounded-md px-2 py-1 text-[13px] font-medium text-foreground/90 transition-colors hover:bg-muted"
         >
           {projectName}
@@ -105,6 +107,7 @@ function ProjectTitle() {
 }
 
 function ModeSelector() {
+  useLocale();
   const workMode = useFlowStore((s) => s.workMode);
   const setWorkMode = useFlowStore((s) => s.setWorkMode);
   const [open, setOpen] = useState(false);
@@ -131,7 +134,7 @@ function ModeSelector() {
         )}
       >
         <Logo className="h-4 w-4" />
-        <span className="text-[13px] font-semibold">{current.label}</span>
+        <span className="text-[13px] font-semibold">{translate(current.label)}</span>
         <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
       </button>
       {open && (
@@ -149,7 +152,7 @@ function ModeSelector() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors hover:bg-muted"
               >
                 <m.icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                <span className="flex-1">{m.label}</span>
+                <span className="flex-1">{translate(m.label)}</span>
                 {active && <Check className="h-3.5 w-3.5" />}
               </button>
             );
@@ -161,6 +164,7 @@ function ModeSelector() {
 }
 
 export function Toolbar() {
+  useLocale();
   // Only subscribe to the booleans the toolbar renders with — save/export
   // read the full workspace via getState() at call time so the toolbar
   // doesn't re-render on every node drag frame.
@@ -509,7 +513,7 @@ export function Toolbar() {
       replaceDocument(snap);
     } catch (e) {
       console.error(e);
-      alert("Could not load file. See console for details.");
+      alert(translate("Could not load file. See console for details."));
     }
   };
 
@@ -533,8 +537,8 @@ export function Toolbar() {
         <button
           type="button"
           onClick={() => setSettingsOpen(true)}
-          aria-label="Settings"
-          title="Settings"
+          aria-label={translate("Settings")}
+          title={translate("Settings")}
           className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <Settings className="h-4 w-4" />
@@ -562,10 +566,10 @@ export function Toolbar() {
           className="gap-1.5"
           onClick={openPreview}
           disabled={!hasNodes}
-          title="Hide the editor for screenshots or recording"
+          title={translate("Hide the editor for screenshots or recording")}
         >
           <Eye className="h-3.5 w-3.5" />
-          Preview
+          {translate("Preview")}
         </Button>
       </div>
 
@@ -599,13 +603,13 @@ export function Toolbar() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save file</DialogTitle>
+            <DialogTitle>{translate("Save file")}</DialogTitle>
             <DialogDescription>
-              Downloads the whole project as a .json file.
+              {translate("Downloads the whole project as a .json file.")}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-1.5 py-1">
-            <Label htmlFor="save-filename">File name</Label>
+            <Label htmlFor="save-filename">{translate("File name")}</Label>
             <div className="flex items-center gap-1">
               <Input
                 id="save-filename"
@@ -632,7 +636,7 @@ export function Toolbar() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSaveDialog(null)}>
-              Cancel
+              {translate("Cancel")}
             </Button>
             <Button
               onClick={() => {
@@ -642,7 +646,7 @@ export function Toolbar() {
                 doSave(name);
               }}
             >
-              Save
+              {translate("Save")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -650,15 +654,14 @@ export function Toolbar() {
       <Dialog open={confirmResetOpen} onOpenChange={setConfirmResetOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reset workspace?</DialogTitle>
+            <DialogTitle>{translate("Reset workspace?")}</DialogTitle>
             <DialogDescription>
-              Wipes all nodes, edges, groups, custom blocks, and preferences.
-              App reloads as brand new. Cannot be undone.
+              {translate("Wipes all nodes, edges, groups, custom blocks, and preferences. App reloads as brand new. Cannot be undone.")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmResetOpen(false)}>
-              Cancel
+              {translate("Cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -667,7 +670,7 @@ export function Toolbar() {
                 void resetWorkspace();
               }}
             >
-              Reset workspace
+              {translate("Reset workspace")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -681,12 +684,12 @@ export function Toolbar() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Export {exportDialog?.format.toUpperCase() ?? ""}
+              {translate("Export")}{exportDialog?.format.toUpperCase() ?? ""}
             </DialogTitle>
-            <DialogDescription>Choose a file name.</DialogDescription>
+            <DialogDescription>{translate("Choose a file name.")}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-1.5 py-1">
-            <Label htmlFor="export-filename">File name</Label>
+            <Label htmlFor="export-filename">{translate("File name")}</Label>
             <div className="flex items-center gap-1">
               <Input
                 id="export-filename"
@@ -713,7 +716,7 @@ export function Toolbar() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setExportDialog(null)}>
-              Cancel
+              {translate("Cancel")}
             </Button>
             <Button
               onClick={() => {
@@ -723,7 +726,7 @@ export function Toolbar() {
                 void exportImage(format, name, bounds);
               }}
             >
-              Export
+              {translate("Export")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -731,14 +734,14 @@ export function Toolbar() {
       <Dialog open={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Clear canvas?</DialogTitle>
+            <DialogTitle>{translate("Clear canvas?")}</DialogTitle>
             <DialogDescription>
-              This removes all nodes, edges, and groups. Cannot be undone.
+              {translate("This removes all nodes, edges, and groups. Cannot be undone.")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmClearOpen(false)}>
-              Cancel
+              {translate("Cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -747,7 +750,7 @@ export function Toolbar() {
                 setConfirmClearOpen(false);
               }}
             >
-              Clear canvas
+              {translate("Clear canvas")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -777,6 +780,7 @@ function CropOverlay({
   onExportAll: () => void;
   onCancel: () => void;
 }) {
+  useLocale();
   const [start, setStart] = useState<{ x: number; y: number } | null>(null);
   const [end, setEnd] = useState<{ x: number; y: number } | null>(null);
   const dragging = useRef(false);
@@ -848,7 +852,7 @@ function CropOverlay({
       <div className="fixed left-1/2 top-4 z-[51] -translate-x-1/2">
         <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-popover px-4 py-2 shadow-xl">
           <span className="text-[13px] text-foreground">
-            Draw to select area
+            {translate("Draw to select area")}
           </span>
           <button
             type="button"
@@ -859,10 +863,10 @@ function CropOverlay({
             }}
             className="rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Export all
+            {translate("Export all")}
           </button>
           <span className="text-xs text-muted-foreground">
-            ESC to cancel
+            {translate("ESC to cancel")}
           </span>
         </div>
       </div>

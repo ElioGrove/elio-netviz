@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import {
   createContext,
   memo,
@@ -107,6 +108,7 @@ const EMPTY_NODES: AppNode[] = [];
 const EMPTY_GROUPS: Group[] = [];
 
 export function LayersPanel({ query = "" }: { query?: string }) {
+  useLocale();
   const q = query.trim().toLowerCase();
   const rootGroups = useFlowStore(
     useShallow((s) => s.groups.filter((g) => g.parentGroupId === null))
@@ -198,7 +200,7 @@ export function LayersPanel({ query = "" }: { query?: string }) {
     e.preventDefault();
     openCtx(e.clientX, e.clientY, [
       {
-        label: "New group",
+        label: translate("New group"),
         icon: FolderPlus,
         onSelect: () => createGroup(null),
       },
@@ -236,13 +238,13 @@ export function LayersPanel({ query = "" }: { query?: string }) {
       <div className="flex h-full flex-col">
         <div className="flex items-center justify-between px-3 py-2">
           <p className="px-1 text-xs font-semibold text-foreground">
-            Layers
+            {translate("Layers")}
           </p>
           <button
             onClick={() => createGroup(null)}
             className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            title="New group"
-            aria-label="New group"
+            title={translate("New group")}
+            aria-label={translate("New group")}
           >
             <FolderPlus className="h-3.5 w-3.5" />
           </button>
@@ -264,11 +266,11 @@ export function LayersPanel({ query = "" }: { query?: string }) {
               className="px-3 py-6 text-center text-xs text-muted-foreground/70"
               onContextMenu={onEmptyContextMenu}
             >
-              No layers yet. Drop a block on the canvas.
+              {translate("No layers yet. Drop a block on the canvas.")}
             </p>
           ) : nothingMatches ? (
             <p className="px-3 py-6 text-center text-xs text-muted-foreground/70">
-              No layers match.
+              {translate("No layers match.")}
             </p>
           ) : (
             <FilterContext.Provider value={filter}>
@@ -325,6 +327,7 @@ const GroupRow = memo(function GroupRow({
   group: Group;
   depth: number;
 }) {
+  useLocale();
   const children = useFlowStore(
     useShallow((s) => s.groups.filter((g) => g.parentGroupId === group.id))
   );
@@ -411,22 +414,22 @@ const GroupRow = memo(function GroupRow({
     e.stopPropagation();
     openCtx(e.clientX, e.clientY, [
       {
-        label: "Rename",
+        label: translate("Rename"),
         icon: Pencil,
         onSelect: () => setEditing(true),
       },
       {
-        label: groupEffect.anyVisible ? "Hide" : "Show",
+        label: groupEffect.anyVisible ? translate("Hide") : translate("Show"),
         icon: groupEffect.anyVisible ? Eye : EyeOff,
         onSelect: () => toggleGroupHidden(group.id),
       },
       {
-        label: groupEffect.anyUnlocked ? "Lock" : "Unlock",
+        label: groupEffect.anyUnlocked ? translate("Lock") : translate("Unlock"),
         icon: groupEffect.anyUnlocked ? LockOpen : Lock,
         onSelect: () => toggleGroupLocked(group.id),
       },
       {
-        label: "Delete",
+        label: translate("Delete"),
         icon: Trash2,
         danger: true,
         onSelect: () => deleteGroup(group.id),
@@ -481,8 +484,8 @@ const GroupRow = memo(function GroupRow({
                     ? "opacity-0 group-hover:opacity-100"
                     : "opacity-100"
                 )}
-                title={groupEffect.anyVisible ? "Hide" : "Show"}
-                aria-label={groupEffect.anyVisible ? "Hide group" : "Show group"}
+                title={groupEffect.anyVisible ? translate("Hide") : translate("Show")}
+                aria-label={groupEffect.anyVisible ? translate("Hide group") : translate("Show group")}
               >
                 {groupEffect.anyVisible ? (
                   <Eye className="h-3.5 w-3.5" />
@@ -503,8 +506,8 @@ const GroupRow = memo(function GroupRow({
                     ? "opacity-0 group-hover:opacity-100"
                     : "opacity-100"
                 )}
-                title={groupEffect.anyUnlocked ? "Lock" : "Unlock"}
-                aria-label={groupEffect.anyUnlocked ? "Lock group" : "Unlock group"}
+                title={groupEffect.anyUnlocked ? translate("Lock") : translate("Unlock")}
+                aria-label={groupEffect.anyUnlocked ? translate("Lock group") : translate("Unlock group")}
               >
                 {groupEffect.anyUnlocked ? (
                   <LockOpen className="h-3 w-3" />
@@ -519,8 +522,8 @@ const GroupRow = memo(function GroupRow({
                 deleteGroup(group.id);
               }}
               className="opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-              title="Delete group (keeps nodes)"
-              aria-label="Delete group"
+              title={translate("Delete group (keeps nodes)")}
+              aria-label={translate("Delete group")}
             >
               <Trash2 className="h-3 w-3" />
             </button>
@@ -556,6 +559,7 @@ const NodeRow = memo(function NodeRow({
   node: AppNode;
   depth: number;
 }) {
+  useLocale();
   const selectNodes = useFlowStore((s) => s.selectNodes);
   const toggleNodeSelection = useFlowStore((s) => s.toggleNodeSelection);
   const toggleNodeHidden = useFlowStore((s) => s.toggleNodeHidden);
@@ -605,23 +609,23 @@ const NodeRow = memo(function NodeRow({
     const items: CtxItem[] = [];
     if (canRename) {
       items.push({
-        label: "Rename",
+        label: translate("Rename"),
         icon: Pencil,
         onSelect: () => setEditing(true),
       });
     }
     items.push({
-      label: hidden ? "Show" : "Hide",
+      label: hidden ? translate("Show") : translate("Hide"),
       icon: hidden ? EyeOff : Eye,
       onSelect: () => toggleNodeHidden(node.id),
     });
     items.push({
-      label: locked ? "Unlock" : "Lock",
+      label: locked ? translate("Unlock") : translate("Lock"),
       icon: locked ? LockOpen : Lock,
       onSelect: () => toggleNodeLocked(node.id),
     });
     items.push({
-      label: "Delete",
+      label: translate("Delete"),
       icon: Trash2,
       danger: true,
       onSelect: () => deleteNode(node.id),
@@ -667,8 +671,8 @@ const NodeRow = memo(function NodeRow({
                 "transition-opacity hover:text-foreground",
                 hidden ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}
-              title={hidden ? "Show" : "Hide"}
-              aria-label={hidden ? "Show node" : "Hide node"}
+              title={hidden ? translate("Show") : translate("Hide")}
+              aria-label={hidden ? translate("Show node") : translate("Hide node")}
             >
               {hidden ? (
                 <EyeOff className="h-3.5 w-3.5" />
@@ -685,8 +689,8 @@ const NodeRow = memo(function NodeRow({
                 "transition-opacity hover:text-foreground",
                 locked ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}
-              title={locked ? "Unlock" : "Lock"}
-              aria-label={locked ? "Unlock node" : "Lock node"}
+              title={locked ? translate("Unlock") : translate("Lock")}
+              aria-label={locked ? translate("Unlock node") : translate("Lock node")}
             >
               {locked ? (
                 <Lock className="h-3 w-3" />
@@ -700,8 +704,8 @@ const NodeRow = memo(function NodeRow({
                 deleteNode(node.id);
               }}
               className="opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-              title="Delete node"
-              aria-label="Delete node"
+              title={translate("Delete node")}
+              aria-label={translate("Delete node")}
             >
               <Trash2 className="h-3 w-3" />
             </button>

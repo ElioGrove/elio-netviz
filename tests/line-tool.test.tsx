@@ -1,3 +1,4 @@
+import { useLocaleStore } from "../src/i18n";
 import { beforeEach, describe, expect, test } from "vitest";
 import { testFile } from "./test-file";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -8,6 +9,9 @@ import { useFlowStore, type LineNode } from "../src/store/flow-store";
 beforeEach(() => {
   useFlowStore.setState({ nodes: [], edges: [], groups: [] });
 });
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("line tool", () => {
   test("appears in the canvas toolbar with the L shortcut", () => {

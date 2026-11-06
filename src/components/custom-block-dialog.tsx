@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useMemo, useRef, useState } from "react";
 import {
   AlignCenter,
@@ -69,12 +70,13 @@ type ColorTarget = {
 };
 
 function ColorsSection({ targets }: { targets: ColorTarget[] }) {
+  useLocale();
   const [activeKey, setActiveKey] = useState(targets[0]?.key ?? "");
   const active = targets.find((t) => t.key === activeKey) ?? targets[0];
   if (!active) return null;
   return (
     <div className="grid gap-2">
-      <Label>Colors</Label>
+      <Label>{translate("Colors")}</Label>
       <div className="flex flex-wrap gap-1">
         {targets.map((t) => {
           const selected = t.key === active.key;
@@ -94,7 +96,7 @@ function ColorsSection({ targets }: { targets: ColorTarget[] }) {
                 className="h-3 w-3 rounded-sm ring-1 ring-inset ring-border"
                 style={t.value ? { backgroundColor: t.value } : undefined}
               />
-              {t.label}
+              {translate(t.label)}
             </button>
           );
         })}
@@ -108,8 +110,8 @@ function ColorsSection({ targets }: { targets: ColorTarget[] }) {
               key={p.id}
               type="button"
               onClick={() => active.onChange(p.hex ?? undefined)}
-              title={p.label}
-              aria-label={p.label}
+              title={translate(p.label)}
+              aria-label={translate(p.label)}
               className={cn(
                 "flex h-6 w-6 items-center justify-center rounded-md transition-shadow",
                 isNone && "bg-muted",
@@ -133,6 +135,7 @@ export function CustomBlockDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
 }) {
+  useLocale();
   const addCustomBlock = useFlowStore((s) => s.addCustomBlock);
   const [label, setLabel] = useState("");
   const [subtitle, setSubtitle] = useState("");
@@ -208,44 +211,44 @@ export function CustomBlockDialog({
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogContent className="max-h-[85vh] max-w-lg overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>New custom block</DialogTitle>
+          <DialogTitle>{translate("New custom block")}</DialogTitle>
           <DialogDescription>
-            Define a reusable block for your diagrams.
+            {translate("Define a reusable block for your diagrams.")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4">
           <div className="grid gap-1.5">
-            <Label htmlFor="cb-label">Name</Label>
+            <Label htmlFor="cb-label">{translate("Name")}</Label>
             <Input
               id="cb-label"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              placeholder="e.g. Edge Router"
+              placeholder={translate("e.g. Edge Router")}
               autoFocus
             />
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor="cb-sub">
-              Subtitle{" "}
-              <span className="text-muted-foreground">(optional)</span>
+              {translate("Subtitle")}{" "}
+              <span className="text-muted-foreground">{translate("(optional)")}</span>
             </Label>
             <Input
               id="cb-sub"
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
-              placeholder="e.g. Region US-East"
+              placeholder={translate("e.g. Region US-East")}
             />
           </div>
 
           <div className="grid gap-2">
-            <Label>Icon</Label>
+            <Label>{translate("Icon")}</Label>
             <div className="relative">
               <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={iconQuery}
                 onChange={(e) => setIconQuery(e.target.value)}
-                placeholder="Search icons…"
+                placeholder={translate("Search icons…")}
                 className="h-8 pl-7 text-xs"
               />
             </div>
@@ -253,7 +256,7 @@ export function CustomBlockDialog({
               <button
                 type="button"
                 onClick={() => setIconName("")}
-                title="None"
+                title={translate("None")}
                 className={cn(
                   "flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
                   iconName === "" && "bg-accent text-foreground"
@@ -280,15 +283,13 @@ export function CustomBlockDialog({
               })}
               {filteredIcons.length > shownIcons.length && (
                 <p className="col-span-10 px-2 py-1.5 text-center text-[10px] text-muted-foreground/70">
-                  +{filteredIcons.length - shownIcons.length} more — search to
-                  narrow
-                </p>
+                  +{filteredIcons.length - shownIcons.length} {translate("more — search to narrow")}</p>
               )}
             </div>
           </div>
 
           <div className="grid gap-2">
-            <Label>Custom icon (optional)</Label>
+            <Label>{translate("Custom icon (optional)")}</Label>
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {customIcon ? (
@@ -304,14 +305,14 @@ export function CustomBlockDialog({
                 className="h-8 flex-1"
                 onClick={() => iconInputRef.current?.click()}
               >
-                {customIcon ? "Replace" : "Upload image"}
+                {customIcon ? "Replace" : translate("Upload image")}
               </Button>
               {customIcon && (
                 <button
                   type="button"
                   onClick={() => setCustomIcon(undefined)}
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                  aria-label="Remove"
+                  aria-label={translate("Remove")}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -331,7 +332,7 @@ export function CustomBlockDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label>Accent</Label>
+            <Label>{translate("Accent")}</Label>
             <div className="flex flex-wrap gap-2">
               {ACCENTS.map((a) => {
                 const c = ACCENT_CLASSES[a];
@@ -355,7 +356,7 @@ export function CustomBlockDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label>Icon position</Label>
+            <Label>{translate("Icon position")}</Label>
             <Segmented
               value={iconPosition}
               onChange={setIconPosition}
@@ -367,7 +368,7 @@ export function CustomBlockDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label>Text align</Label>
+            <Label>{translate("Text align")}</Label>
             <Segmented
               value={textAlign}
               onChange={setTextAlign}
@@ -381,20 +382,20 @@ export function CustomBlockDialog({
 
           <ColorsSection
             targets={[
-              { key: "bg", label: "Background", value: bgColor, onChange: setBgColor },
-              { key: "title", label: "Title", value: titleColor, onChange: setTitleColor },
-              { key: "desc", label: "Description", value: subtitleColor, onChange: setSubtitleColor },
-              { key: "border", label: "Border", value: borderColor, onChange: setBorderColor },
+              { key: "bg", label: translate("Background"), value: bgColor, onChange: setBgColor },
+              { key: "title", label: translate("Title"), value: titleColor, onChange: setTitleColor },
+              { key: "desc", label: translate("Description"), value: subtitleColor, onChange: setSubtitleColor },
+              { key: "border", label: translate("Border"), value: borderColor, onChange: setBorderColor },
             ]}
           />
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpen(false)}>
-            Cancel
+            {translate("Cancel")}
           </Button>
           <Button onClick={submit} disabled={!label.trim()}>
-            Create
+            {translate("Create")}
           </Button>
         </DialogFooter>
       </DialogContent>

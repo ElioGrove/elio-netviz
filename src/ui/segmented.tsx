@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import type { ComponentType, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ export function Segmented<T extends string>({
   options: SegmentedOption<T>[];
   className?: string;
 }) {
+  useLocale();
   return (
     <div
       className={cn(
@@ -35,7 +37,7 @@ export function Segmented<T extends string>({
             key={o.value}
             type="button"
             disabled={o.disabled}
-            title={o.title}
+            title={o.title ? translate(o.title) : undefined}
             aria-pressed={active}
             onClick={() => !o.disabled && onChange(o.value)}
             className={cn(
@@ -47,7 +49,7 @@ export function Segmented<T extends string>({
             )}
           >
             {Ic ? <Ic className="h-3.5 w-3.5" /> : null}
-            {o.label}
+            {typeof o.label === "string" ? translate(o.label) : o.label}
           </button>
         );
       })}

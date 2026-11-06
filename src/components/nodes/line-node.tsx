@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { memo, useCallback, useMemo } from "react";
 import { useReactFlow, type NodeProps } from "@xyflow/react";
 import {
@@ -73,6 +74,7 @@ function LineNodeComponent({
   selected,
   id,
 }: NodeProps<LineNode>) {
+  useLocale();
   const { screenToFlowPosition } = useReactFlow();
   const updateLineGeometry = useFlowStore((s) => s.updateLineGeometry);
   const setLineEndpointBinding = useFlowStore(
@@ -218,12 +220,12 @@ function LineNodeComponent({
         <>
           <EndpointHandle
             point={start}
-            label="Start"
+            label={translate("Start")}
             onPointerDown={beginEndpointDrag("start")}
           />
           <EndpointHandle
             point={end}
-            label="End"
+            label={translate("End")}
             onPointerDown={beginEndpointDrag("end")}
           />
         </>
@@ -246,8 +248,8 @@ function EndpointHandle({
   return (
     <button
       type="button"
-      aria-label={`${label} endpoint`}
-      title={`${label} endpoint`}
+      aria-label={translate("{label} endpoint", { label })}
+      title={translate("{label} endpoint", { label })}
       className="nodrag nopan absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ring bg-background shadow-sm transition-transform hover:scale-110"
       style={{ left: point.x, top: point.y }}
       onPointerDown={onPointerDown}

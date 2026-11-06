@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import type { FlowSnapshot } from "@/lib/storage";
 import {
@@ -39,34 +40,33 @@ export function SharedProjectConflictContent({
   onCancel: () => void;
   onOpen: () => void;
 }) {
+  useLocale();
   return (
     <>
       <div>
         <h2 className="text-sm font-semibold text-foreground">
-          Open shared project?
+          {translate("Open shared project?")}
         </h2>
         <p className="pt-1.5 text-xs leading-relaxed text-muted-foreground">
-          This link contains <strong className="text-foreground">{projectName}</strong>.
-          Opening it will replace your current local workspace.
+          {translate("This link contains")}<strong className="text-foreground">{projectName}</strong>{translate(". Opening it will replace your current local workspace.")}
         </p>
       </div>
       <p className="text-[11px] leading-relaxed text-muted-foreground">
-        Download your existing work first, or open this link in an
-        incognito/private window to keep both projects separate.
+        {translate("Download your existing work first, or open this link in an incognito/private window to keep both projects separate.")}
       </p>
       <DialogFooter className="grid-cols-3">
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {translate("Cancel")}
         </Button>
         <Button
           variant="outline"
-          aria-label="Download current project"
+          aria-label={translate("Download current project")}
           onClick={onDownload}
         >
-          Download
+          {translate("Download")}
         </Button>
         <Button variant="destructive" onClick={onOpen}>
-          Open project
+          {translate("Open project")}
         </Button>
       </DialogFooter>
     </>
@@ -74,6 +74,7 @@ export function SharedProjectConflictContent({
 }
 
 export function SharedProjectGate() {
+  useLocale();
   const started = useRef(false);
   const [pending, setPending] = useState<FlowSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -92,7 +93,7 @@ export function SharedProjectGate() {
           removeSharePayload();
           useFlowStore.getState().replaceDocument(snapshot);
         })
-        .catch(() => setError("The shared-project link is invalid or damaged."));
+        .catch(() => setError(translate("The shared-project link is invalid or damaged.")));
     };
 
     if (useFlowStore.persist.hasHydrated()) {
@@ -123,7 +124,7 @@ export function SharedProjectGate() {
     <>
       <Dialog open={!!pending} onOpenChange={(next) => !next && cancel()}>
         <DialogContent>
-          <DialogTitle className="sr-only">Open shared project?</DialogTitle>
+          <DialogTitle className="sr-only">{translate("Open shared project?")}</DialogTitle>
           {pending ? (
             <SharedProjectConflictContent
               projectName={pending.projectName}
@@ -139,12 +140,12 @@ export function SharedProjectGate() {
       </Dialog>
       <Dialog open={!!error} onOpenChange={(next) => !next && closeError()}>
         <DialogContent>
-          <DialogTitle>Could not open shared project</DialogTitle>
+          <DialogTitle>{translate("Could not open shared project")}</DialogTitle>
           <p className="text-xs leading-relaxed text-muted-foreground">
             {error}
           </p>
           <DialogFooter className="grid-cols-1">
-            <Button onClick={closeError}>Close</Button>
+            <Button onClick={closeError}>{translate("Close")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

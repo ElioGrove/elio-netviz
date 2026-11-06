@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, test } from "vitest";
+import { useLocaleStore } from "../src/i18n";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { testFile } from "./test-file";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReactNode } from "react";
@@ -43,6 +44,9 @@ const renderControls = (controls: ReactNode) =>
   renderToStaticMarkup(
     <ReactFlowProvider>{controls}</ReactFlowProvider>
   );
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("PlaybackControls", () => {
   afterEach(() => {

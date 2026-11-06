@@ -1,6 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { useLocaleStore } from "../src/i18n";
+import { beforeEach, describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { SharedProjectConflictContent } from "../src/App";
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("shared project protection", () => {
   test("warns before replacing a workspace and offers a direct download", () => {

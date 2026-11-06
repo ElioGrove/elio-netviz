@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { memo, useRef } from "react";
 import {
   Handle,
@@ -17,6 +18,7 @@ const HANDLE_POSITIONS: { pos: Position; key: string }[] = [
 ];
 
 function ImageNodeComponent({ id, data, selected }: NodeProps<ImageNode>) {
+  useLocale();
   const updateNodeData = useFlowStore((state) => state.updateNodeData);
   const inputRef = useRef<HTMLInputElement>(null);
   const hasBg = !!data.bgColor;
@@ -66,10 +68,10 @@ function ImageNodeComponent({ id, data, selected }: NodeProps<ImageNode>) {
             type="button"
             onClick={() => inputRef.current?.click()}
             className="nodrag nopan flex h-full w-full flex-col items-center justify-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-            aria-label="Choose image"
+            aria-label={translate("Choose image")}
           >
             <ImageIcon className="h-5 w-5" />
-            <span>Click to add image</span>
+            <span>{translate("Click to add image")}</span>
           </button>
         )}
       </div>

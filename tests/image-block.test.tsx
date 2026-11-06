@@ -1,3 +1,4 @@
+import { useLocaleStore } from "../src/i18n";
 import { beforeEach, describe, expect, test } from "vitest";
 import { testFile } from "./test-file";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -11,6 +12,9 @@ import {
 beforeEach(() => {
   useFlowStore.setState({ nodes: [], edges: [], groups: [] });
 });
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("image block", () => {
   test("creates an empty image frame with editable appearance defaults", () => {
@@ -85,10 +89,10 @@ describe("image block", () => {
       new URL("../src/components/inspector.tsx", import.meta.url)
     ).text();
 
-    expect(inspector).toContain('aria-label="Image fit"');
-    expect(inspector).toContain('label="Scale"');
-    expect(inspector).toContain('label="Opacity"');
-    expect(inspector).toContain('label="Border width"');
+    expect(inspector).toContain('aria-label={translate("Image fit")}');
+    expect(inspector).toContain('label={translate("Scale")}');
+    expect(inspector).toContain('label={translate("Opacity")}');
+    expect(inspector).toContain('label={translate("Border width")}');
     expect(inspector).toContain("Replace image");
     expect(inspector).not.toContain("Alt text");
   });

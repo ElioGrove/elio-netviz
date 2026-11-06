@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useEffect, useRef, useState } from "react";
 import {
   BaseEdge,
@@ -25,6 +26,7 @@ export function LabeledEdge({
   style,
   interactionWidth = 20,
 }: EdgeProps<LabeledEdgeType>) {
+  useLocale();
   const pathArgs = {
     sourceX,
     sourceY,
@@ -141,7 +143,7 @@ export function LabeledEdge({
                 e.stopPropagation();
               }}
               className="h-6 w-28 rounded-full border border-border bg-card px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
-              placeholder="Label"
+              placeholder={translate("Label")}
             />
           ) : workMode === "preview" ? (
             label ? (

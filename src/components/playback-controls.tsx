@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import {
   useCallback,
   useEffect,
@@ -173,6 +174,7 @@ export function PlaybackControls({
   className?: string;
   motionPreference?: MotionPreference;
 }) {
+  useLocale();
   const { getViewport } = useReactFlow();
   const workMode = useFlowStore((state) => state.workMode);
   const storedMotionPreference = useFlowStore(
@@ -267,24 +269,24 @@ export function PlaybackControls({
     return (
       <div
         role="toolbar"
-        aria-label="Animation playback"
+        aria-label={translate("Animation playback")}
         className={cn(
           "flex min-w-0 flex-col gap-2 border-b border-border px-4 py-3.5",
           className
         )}
       >
         <span className="text-xs font-medium text-foreground/70">
-          Reduced motion is on
+          {translate("Reduced motion is on")}
         </span>
         <Button
           type="button"
           variant="ghost"
           size="sm"
           className="h-7 px-2 text-[11px]"
-          aria-label="Enable full motion"
+          aria-label={translate("Enable full motion")}
           onClick={() => setMotionPreference("full")}
         >
-          Enable motion
+          {translate("Enable motion")}
         </Button>
       </div>
     );
@@ -293,14 +295,14 @@ export function PlaybackControls({
   return (
     <div
       role="toolbar"
-      aria-label="Animation playback"
+      aria-label={translate("Animation playback")}
       className={cn(
         "flex min-w-0 flex-col gap-2 border-b border-border px-4 py-3.5",
         className
       )}
     >
       <div className="flex items-center">
-        <span className="text-[13px] font-semibold text-foreground">Player</span>
+        <span className="text-[13px] font-semibold text-foreground">{translate("Player")}</span>
       </div>
       <div className="flex gap-1 rounded-lg bg-input p-1">
         <Button
@@ -308,7 +310,7 @@ export function PlaybackControls({
           variant="ghost"
           size="sm"
           className="h-7 flex-1 gap-1.5 rounded-md text-xs"
-          aria-label={transport.isPlaying ? "Pause animation" : "Play animation"}
+          aria-label={transport.isPlaying ? translate("Pause animation") : translate("Play animation")}
           aria-keyshortcuts="Space"
           disabled={!hasScenario}
           onClick={() =>
@@ -327,15 +329,15 @@ export function PlaybackControls({
           {transport.isPlaying
             ? "Pause"
             : workMode === "video"
-              ? "Play"
-              : "Play all"}
+              ? translate("Play")
+              : translate("Play all")}
         </Button>
         <Button
           type="button"
           variant="ghost"
           size="icon"
           className="h-7 w-7 rounded-md"
-          aria-label="Restart animation"
+          aria-label={translate("Restart animation")}
           aria-keyshortcuts="Home"
           disabled={!hasScenario}
           onClick={workMode === "video" ? playVideo : restartAllConnections}
@@ -344,17 +346,17 @@ export function PlaybackControls({
         </Button>
       </div>
       <div className="grid min-h-7 grid-cols-[72px_1fr] items-center gap-2">
-        <span className="text-xs font-medium text-foreground/70">Speed</span>
+        <span className="text-xs font-medium text-foreground/70">{translate("Speed")}</span>
         <div
           role="group"
-          aria-label="Playback speed"
+          aria-label={translate("Playback speed")}
           className="grid grid-cols-4 rounded-md bg-input p-0.5"
         >
           {PLAYBACK_RATES.map((rate) => (
             <button
               key={rate}
               type="button"
-              aria-label={`Playback rate ${rate}x`}
+              aria-label={translate("Playback rate {rate}x", { rate })}
               aria-pressed={transport.playbackRate === rate}
               disabled={!hasScenario}
               onClick={() => scenarioRuntime.setPlaybackRate(rate)}

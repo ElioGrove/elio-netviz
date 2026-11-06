@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import {
   useEffect,
   useMemo,
@@ -84,6 +85,7 @@ export function Picker({
   disabled,
   onChange,
   preview,
+  translateOptions = true,
 }: {
   label: string;
   value: string;
@@ -91,7 +93,9 @@ export function Picker({
   disabled?: boolean;
   onChange: (value: string) => void;
   preview?: ReactNode;
+  translateOptions?: boolean;
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<{
     left: number;
@@ -164,7 +168,7 @@ export function Picker({
         )}
       >
         {preview}
-        <span className="truncate">{selected?.label ?? value}</span>
+        <span className="truncate">{selected ? (translateOptions ? translate(selected.label) : selected.label) : value}</span>
         <ChevronDown className="ml-auto h-3 w-3 shrink-0 text-muted-foreground" />
       </button>
       {open &&
@@ -173,7 +177,7 @@ export function Picker({
           <div
             ref={panelRef}
             role="listbox"
-            aria-label={`${label} options`}
+            aria-label={translate("{label} options", { label })}
             className="fixed z-50 max-h-[calc(100vh-16px)] overflow-y-auto rounded-xl border border-border/60 bg-popover p-1.5 shadow-xl"
             style={position}
           >
@@ -194,7 +198,7 @@ export function Picker({
                     : "text-muted-foreground"
                 )}
               >
-                <span className="truncate">{option.label}</span>
+                <span className="truncate">{translateOptions ? translate(option.label) : option.label}</span>
                 {option.value === value ? (
                   <Check className="ml-auto h-3.5 w-3.5 text-primary" />
                 ) : null}
@@ -241,7 +245,7 @@ function TimingRow({
         disabled={disabled}
         onChange={(event) => onChange(Number(event.currentTarget.value))}
         className="min-w-0 flex-1"
-        aria-label={`${ariaLabel} slider`}
+        aria-label={translate("{label} slider", { label: ariaLabel })}
       />
       <div className="relative w-14 shrink-0">
         <input
@@ -300,7 +304,7 @@ function ValueRow({
         disabled={disabled}
         onChange={(event) => onChange(Number(event.currentTarget.value))}
         className="min-w-0 flex-1"
-        aria-label={`${ariaLabel} slider`}
+        aria-label={translate("{label} slider", { label: ariaLabel })}
       />
       <input
         type="number"
@@ -332,6 +336,7 @@ function ColorField({
   disabled: boolean;
   onChange: (value: string) => void;
 }) {
+  useLocale();
   return (
     <label
       className={cn(
@@ -344,7 +349,7 @@ function ColorField({
         style={{ backgroundColor: value ?? "transparent" }}
       />
       <span className="truncate tabular-nums">
-        {value ? value.replace("#", "").toUpperCase() : "Mixed"}
+        {value ? value.replace("#", "").toUpperCase() : translate("Mixed")}
       </span>
       <input
         type="color"
@@ -442,26 +447,29 @@ export function AnimationBeamScopeControls({
   onAnimationChange: (scenarioId: string) => void;
   onBeamChange: (beamKey: string) => void;
 }) {
+  useLocale();
   return (
     <>
-      <Row label="Animation">
+      <Row label={translate("Animation")}>
         <Picker
-          label="Animation occurrence"
+          label={translate("Animation occurrence")}
           value={activeScenarioId}
           options={animationOptions}
+          translateOptions={false}
           onChange={onAnimationChange}
         />
       </Row>
-      <Row label="Beam">
+      <Row label={translate("Beam")}>
         <Picker
-          label="Beam occurrence"
+          label={translate("Beam occurrence")}
           value={activeBeamKey}
           options={beamOptions}
+          translateOptions={false}
           onChange={onBeamChange}
         />
       </Row>
       <p className="pb-1 text-[11px] font-medium leading-4 text-foreground/60">
-        Editing this beam only
+        {translate("Editing this beam only")}
       </p>
     </>
   );
@@ -618,12 +626,13 @@ export function OutputTimingControls({
   staggerMs: number;
   onChange: (staggerMs: number) => void;
 }) {
+  useLocale();
   const staggered = staggerMs > 0;
   return (
     <div className="flex flex-col gap-2">
-      <Row label="Output timing">
+      <Row label={translate("Output timing")}>
         <Picker
-          label="Output timing"
+          label={translate("Output timing")}
           value={staggered ? "staggered" : "simultaneous"}
           options={OUTPUT_TIMING_OPTIONS}
           onChange={(value) =>
@@ -633,8 +642,8 @@ export function OutputTimingControls({
       </Row>
       {staggered ? (
         <TimingRow
-          label="Stagger"
-          ariaLabel="Path stagger delay"
+          label={translate("Stagger")}
+          ariaLabel={translate("Path stagger delay")}
           state={{ status: "uniform", value: staggerMs }}
           min={0.1}
           max={2}
@@ -649,11 +658,12 @@ export function OutputTimingControls({
 const ANIMATION_PATH_DRAG_MIME = "application/x-netviz-animation-path";
 
 export function AnimationPathDragHandle({ name }: { name: string }) {
+  useLocale();
   return (
     <span
       role="img"
-      aria-label={`Drag ${name} to reorder`}
-      title="Drag to reorder"
+      aria-label={translate("Drag {name} to reorder", { name })}
+      title={translate("Drag to reorder")}
       className="flex h-5 w-3 shrink-0 cursor-grab items-center justify-center text-muted-foreground/60 active:cursor-grabbing"
     >
       <svg viewBox="0 0 8 14" className="h-3.5 w-2" aria-hidden="true">
@@ -674,20 +684,20 @@ export function AnimationPathDeleteConfirmation({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  useLocale();
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Delete animation?</DialogTitle>
+        <DialogTitle>{translate("Delete animation?")}</DialogTitle>
         <DialogDescription>
-          “{name}” will be permanently removed. This cannot be undone.
-        </DialogDescription>
+          “{name}{translate("” will be permanently removed. This cannot be undone.")}</DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {translate("Cancel")}
         </Button>
         <Button variant="destructive" onClick={onConfirm}>
-          Delete animation
+          {translate("Delete animation")}
         </Button>
       </DialogFooter>
     </>
@@ -695,6 +705,7 @@ export function AnimationPathDeleteConfirmation({
 }
 
 export function AnimationOverview() {
+  useLocale();
   const edgeCount = useFlowStore((state) => state.edges.length);
   const animateAllEdges = useFlowStore((state) => state.animateAllEdges);
   const beginAnimationPath = useFlowStore(
@@ -703,9 +714,9 @@ export function AnimationOverview() {
 
   return (
     <div className="border-b border-border px-4 py-3.5">
-      <p className="text-[13px] font-semibold text-foreground">Connections</p>
+      <p className="text-[13px] font-semibold text-foreground">{translate("Connections")}</p>
       <p className="pb-3 pt-1 text-xs font-medium leading-[18px] text-foreground/70">
-        Apply one continuous gradient beam to every connection on this page.
+        {translate("Apply one continuous gradient beam to every connection on this page.")}
       </p>
       <Button
         type="button"
@@ -719,7 +730,7 @@ export function AnimationOverview() {
         }}
       >
         <span className="h-[2px] w-6 rounded-full bg-gradient-to-r from-[#ffaa40] to-[#9c40ff]" />
-        Animate all connections
+        {translate("Animate all connections")}
       </Button>
       <Button
         type="button"
@@ -729,13 +740,14 @@ export function AnimationOverview() {
         disabled={edgeCount === 0}
         onClick={() => beginAnimationPath()}
       >
-        Build custom path
+        {translate("Build custom path")}
       </Button>
     </div>
   );
 }
 
 export function ExistingAnimationPath() {
+  useLocale();
   const document = useFlowStore((state) => state.scenarioDocument);
   const edges = useFlowStore((state) => state.edges);
   const nodes = useFlowStore((state) => state.nodes);
@@ -787,7 +799,7 @@ export function ExistingAnimationPath() {
       className="border-b border-border px-4 py-3.5"
       data-existing-animation-path
     >
-      <p className="text-[13px] font-semibold text-foreground">Animations</p>
+      <p className="text-[13px] font-semibold text-foreground">{translate("Animations")}</p>
       <div className="mt-2 space-y-2">
         {paths.map((path, index) => {
           const names = path.nodeIds
@@ -878,11 +890,10 @@ export function ExistingAnimationPath() {
                   }}
                 />
                 <span className="truncate text-xs font-semibold text-foreground">
-                  {path.name === "Default scenario" ? "Custom path" : path.name}
+                  {path.name === "Default scenario" ? translate("Custom path") : path.name}
                 </span>
                 <span className="ml-auto shrink-0 text-[11px] font-medium text-foreground/60">
-                  {new Set(path.nodeIds).size} blocks
-                </span>
+                  {new Set(path.nodeIds).size} {translate("blocks")}</span>
               </div>
               <p className="mt-1.5 line-clamp-2 text-[11px] font-medium leading-[17px] text-foreground/70">
                 {route}
@@ -895,7 +906,7 @@ export function ExistingAnimationPath() {
                   className="h-6 rounded-md text-xs"
                   onClick={() => editAnimationPath(path.scenarioId)}
                 >
-                  Edit
+                  {translate("Edit")}
                 </Button>
                 <Button
                   type="button"
@@ -907,29 +918,29 @@ export function ExistingAnimationPath() {
                     playAllAnimations();
                   }}
                 >
-                  Play
+                  {translate("Play")}
                 </Button>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  aria-label={`Delete ${
+                  aria-label={translate("Delete {label}", { label:
                     path.name === "Default scenario"
-                      ? "Custom path"
+                      ? translate("Custom path")
                       : path.name
-                  }`}
+                  })}
                   className="h-6 rounded-md text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                   onClick={() =>
                     setDeleteTarget({
                       scenarioId: path.scenarioId,
                       name:
                         path.name === "Default scenario"
-                          ? "Custom path"
+                          ? translate("Custom path")
                           : path.name,
                     })
                   }
                 >
-                  Delete
+                  {translate("Delete")}
                 </Button>
               </div>
             </div>
@@ -944,7 +955,7 @@ export function ExistingAnimationPath() {
       >
         <DialogContent>
           <AnimationPathDeleteConfirmation
-            name={deleteTarget?.name ?? "Custom path"}
+            name={deleteTarget?.name ?? translate("Custom path")}
             onCancel={() => setDeleteTarget(null)}
             onConfirm={() => {
               if (!deleteTarget) return;
@@ -966,6 +977,7 @@ export function RequestFlowOptions({
   nodeId: string;
   nodeLabel: string;
 }) {
+  useLocale();
   const edges = useFlowStore((state) => state.edges);
   const animateRequestFlow = useFlowStore(
     (state) => state.animateRequestFlow
@@ -980,10 +992,9 @@ export function RequestFlowOptions({
 
   return (
     <div className="border-b border-border px-4 py-3.5">
-      <p className="text-[13px] font-semibold text-foreground">Request flow</p>
+      <p className="text-[13px] font-semibold text-foreground">{translate("Request flow")}</p>
       <p className="pb-3 pt-1 text-xs font-medium leading-[18px] text-foreground/70">
-        Start at <span className="text-foreground">{nodeLabel}</span> and
-        follow every outgoing connection one hop at a time.
+        {translate("Start at")}<span className="text-foreground">{nodeLabel}</span> {translate("and follow every outgoing connection one hop at a time.")}
       </p>
       <Button
         type="button"
@@ -997,7 +1008,7 @@ export function RequestFlowOptions({
         }}
       >
         <span className="h-[2px] w-6 rounded-full bg-gradient-to-r from-[#ffaa40] to-[#9c40ff]" />
-        Create request flow
+        {translate("Create request flow")}
       </Button>
       <Button
         type="button"
@@ -1007,16 +1018,17 @@ export function RequestFlowOptions({
         disabled={connectionCount === 0}
         onClick={() => beginAnimationPath(nodeId)}
       >
-        Build custom path
+        {translate("Build custom path")}
       </Button>
       <p className="pt-2 text-center text-[11px] font-medium text-foreground/60">
-        {connectionCount} reachable connection{connectionCount === 1 ? "" : "s"}
+        {translate(connectionCount === 1 ? "{count} reachable connection" : "{count} reachable connections", { count: connectionCount })}
       </p>
     </div>
   );
 }
 
 export function AnimationPathBuilder() {
+  useLocale();
   const draft =
     useFlowStore((state) => state.animationPathDraft) ??
     EMPTY_ANIMATION_PATH_DRAFT;
@@ -1074,26 +1086,25 @@ export function AnimationPathBuilder() {
   return (
     <div className="flex-1 overflow-y-auto pb-4" data-animation-path-builder>
       <div className="border-b border-border px-4 py-3.5">
-        <p className="text-[13px] font-semibold text-foreground">Custom path</p>
+        <p className="text-[13px] font-semibold text-foreground">{translate("Custom path")}</p>
         <p className="pb-3 pt-1 text-xs font-medium leading-[18px] text-foreground/70">
-          {PATH_PRESET_HELP[draft.preset]}
+          {translate(PATH_PRESET_HELP[draft.preset])}
         </p>
 
         <label className="mb-3 block text-xs font-medium text-foreground/70">
-          Path name
-          <Input
-            aria-label="Path name"
+          {translate("Path name")}<Input
+            aria-label={translate("Path name")}
             className="mt-1 h-7 text-xs"
             value={draft.name}
-            placeholder="Custom path"
+            placeholder={translate("Custom path")}
             onChange={(event) => setAnimationPathName(event.target.value)}
           />
         </label>
 
         <div className="mb-3 flex flex-col gap-2">
-          <Row label="Path preset">
+          <Row label={translate("Path preset")}>
             <Picker
-              label="Path preset"
+              label={translate("Path preset")}
               value={draft.preset}
               options={PATH_PRESETS}
               onChange={(value) =>
@@ -1112,13 +1123,13 @@ export function AnimationPathBuilder() {
         {pathNodes.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border px-3 py-5 text-center text-xs font-medium leading-[18px] text-foreground/70">
             {draft.preset === "multiple-inputs"
-              ? "Click the receiving block on the canvas"
+              ? translate("Click the receiving block on the canvas")
               : draft.preset === "multiple-outputs" ||
                   draft.preset === "round-robin" ||
                   draft.preset === "failover" ||
                   draft.preset === "scatter-gather"
-                ? "Click the source block on the canvas"
-                : "Click the first block on the canvas"}
+                ? translate("Click the source block on the canvas")
+                : translate("Click the first block on the canvas")}
           </div>
         ) : (
           <div className="max-h-60 overflow-y-auto rounded-lg bg-input p-1.5">
@@ -1153,7 +1164,7 @@ export function AnimationPathBuilder() {
             disabled={draft.nodeIds.length === 0}
             onClick={undoAnimationPathNode}
           >
-            Undo last
+            {translate("Undo last")}
           </Button>
           <Button
             type="button"
@@ -1163,19 +1174,19 @@ export function AnimationPathBuilder() {
             disabled={draft.nodeIds.length === 0}
             onClick={() => beginAnimationPath()}
           >
-            Start over
+            {translate("Start over")}
           </Button>
         </div>
       </div>
 
       <div className="border-b border-border px-4 py-3.5">
         <p className="pb-2.5 text-[13px] font-semibold text-foreground">
-          Appearance
+          {translate("Appearance")}
         </p>
         <div className="flex flex-col gap-2">
-          <Row label="Start">
+          <Row label={translate("Start")}>
             <ColorField
-              label="Path start color"
+              label={translate("Path start color")}
               value={draft.appearance.colors[0]}
               disabled={false}
               onChange={(color) =>
@@ -1185,9 +1196,9 @@ export function AnimationPathBuilder() {
               }
             />
           </Row>
-          <Row label="End">
+          <Row label={translate("End")}>
             <ColorField
-              label="Path end color"
+              label={translate("Path end color")}
               value={draft.appearance.colors[1]}
               disabled={false}
               onChange={(color) =>
@@ -1199,9 +1210,9 @@ export function AnimationPathBuilder() {
           </Row>
           {draft.preset === "request-response" ? (
             <>
-              <Row label="Reply start">
+              <Row label={translate("Reply start")}>
                 <ColorField
-                  label="Response start color"
+                  label={translate("Response start color")}
                   value={draft.appearance.responseColors[0]}
                   disabled={false}
                   onChange={(color) =>
@@ -1214,9 +1225,9 @@ export function AnimationPathBuilder() {
                   }
                 />
               </Row>
-              <Row label="Reply end">
+              <Row label={translate("Reply end")}>
                 <ColorField
-                  label="Response end color"
+                  label={translate("Response end color")}
                   value={draft.appearance.responseColors[1]}
                   disabled={false}
                   onChange={(color) =>
@@ -1232,8 +1243,8 @@ export function AnimationPathBuilder() {
             </>
           ) : null}
           <ValueRow
-            label="Width"
-            ariaLabel="Path animation width"
+            label={translate("Width")}
+            ariaLabel={translate("Path animation width")}
             state={{ status: "uniform", value: draft.appearance.widthPx }}
             min={0.5}
             max={24}
@@ -1244,8 +1255,8 @@ export function AnimationPathBuilder() {
             }
           />
           <ValueRow
-            label="Length"
-            ariaLabel="Path beam length"
+            label={translate("Length")}
+            ariaLabel={translate("Path beam length")}
             state={{ status: "uniform", value: draft.appearance.beamLengthPx }}
             min={8}
             max={240}
@@ -1256,8 +1267,8 @@ export function AnimationPathBuilder() {
             }
           />
           <ValueRow
-            label="Opacity"
-            ariaLabel="Path animation opacity"
+            label={translate("Opacity")}
+            ariaLabel={translate("Path animation opacity")}
             state={{ status: "uniform", value: draft.appearance.opacity }}
             min={0}
             max={1}
@@ -1268,8 +1279,8 @@ export function AnimationPathBuilder() {
             }
           />
           <ValueRow
-            label="Glow"
-            ariaLabel="Path animation glow"
+            label={translate("Glow")}
+            ariaLabel={translate("Path animation glow")}
             state={{ status: "uniform", value: draft.appearance.glowBlurPx }}
             min={0}
             max={32}
@@ -1279,12 +1290,12 @@ export function AnimationPathBuilder() {
               setAnimationPathAppearance({ glowBlurPx })
             }
           />
-          <Row label="Block shimmer">
+          <Row label={translate("Block shimmer")}>
             <button
               type="button"
               role="switch"
               aria-checked={draft.appearance.shimmer}
-              aria-label="Block shimmer"
+              aria-label={translate("Block shimmer")}
               onClick={() =>
                 setAnimationPathAppearance({
                   shimmer: !draft.appearance.shimmer,
@@ -1316,7 +1327,7 @@ export function AnimationPathBuilder() {
           className="h-7 rounded-md text-xs"
           onClick={cancelAnimationPath}
         >
-          Cancel
+          {translate("Cancel")}
         </Button>
         <Button
           type="button"
@@ -1328,7 +1339,7 @@ export function AnimationPathBuilder() {
             playAllAnimations();
           }}
         >
-          Save &amp; play
+          {translate("Save & play")}
         </Button>
       </div>
     </div>
@@ -1336,6 +1347,7 @@ export function AnimationPathBuilder() {
 }
 
 export function AnimationOptions() {
+  useLocale();
   const edges = useFlowStore((state) => state.edges);
   const nodes = useFlowStore((state) => state.nodes);
   const selectedEdgeIds = useMemo(
@@ -1394,16 +1406,16 @@ export function AnimationOptions() {
     const reverse = direction === "reverse";
     const fromNode = reverse ? target : source;
     const toNode = reverse ? source : target;
-    const from = fromNode ? getNodeDisplayName(fromNode) : "Unknown block";
-    const to = toNode ? getNodeDisplayName(toNode) : "Unknown block";
+    const from = fromNode ? getNodeDisplayName(fromNode) : translate("Unknown block");
+    const to = toNode ? getNodeDisplayName(toNode) : translate("Unknown block");
     const phase =
       occurrence.clip.effect.params.pathPhase === "response"
-        ? "Response"
+        ? translate("Response")
         : occurrence.clip.effect.params.pathPreset === "request-response"
-          ? "Request"
+          ? translate("Request")
           : direction === "bidirectional"
-            ? "Bi-directional"
-            : "Beam";
+            ? translate("Bi-directional")
+            : translate("Beam");
     return `${phase} · ${from} ${direction === "bidirectional" ? "↔" : "→"} ${to}`;
   };
   const beamOptions = scenarioOccurrences.map((occurrence) => ({
@@ -1470,14 +1482,14 @@ export function AnimationOptions() {
           <div className="mb-1 flex h-7 items-center gap-2">
             <span className="h-[2px] w-6 rounded-full bg-gradient-to-r from-[#ffaa40] to-[#9c40ff]" />
             <span className="text-xs font-medium text-foreground">
-              Gradient beam
+              {translate("Gradient beam")}
             </span>
             <Button
               type="button"
               variant="ghost"
               size="icon"
               className="ml-auto h-7 w-7 rounded-md"
-              aria-label="Remove gradient beam"
+              aria-label={translate("Remove gradient beam")}
               onClick={() => {
                 if (activeBeam) {
                   removeAnimationBeam({
@@ -1504,12 +1516,12 @@ export function AnimationOptions() {
             }
           >
             <span className="h-[2px] w-6 rounded-full bg-gradient-to-r from-[#ffaa40] to-[#9c40ff]" />
-            Add gradient beam
+            {translate("Add gradient beam")}
           </Button>
         )}
-        <Row label="Direction">
+        <Row label={translate("Direction")}>
           <Picker
-            label="Animation direction"
+            label={translate("Animation direction")}
             value={
               summary.direction.status === "uniform"
                 ? summary.direction.value ?? "forward"
@@ -1520,7 +1532,7 @@ export function AnimationOptions() {
             options={[
               ...DIRECTIONS,
               ...(summary.direction.status === "mixed"
-                ? [{ value: "mixed", label: "Mixed" }]
+                ? [{ value: "mixed", label: translate("Mixed") }]
                 : []),
               ...(summary.direction.status === "none"
                 ? [{ value: "none", label: "—" }]
@@ -1539,8 +1551,8 @@ export function AnimationOptions() {
           />
         </Row>
         <TimingRow
-          label="Travel time"
-          ariaLabel="Beam travel time"
+          label={translate("Travel time")}
+          ariaLabel={translate("Beam travel time")}
           state={summary.duration}
           min={0.4}
           max={8}
@@ -1553,8 +1565,8 @@ export function AnimationOptions() {
           }
         />
         <TimingRow
-          label="Start delay"
-          ariaLabel="Beam start delay"
+          label={translate("Start delay")}
+          ariaLabel={translate("Beam start delay")}
           state={summary.delay}
           min={0}
           max={10}
@@ -1573,18 +1585,18 @@ export function AnimationOptions() {
           onClick={() => beginAnimationPath()}
         >
           <span className="h-[2px] w-6 rounded-full bg-gradient-to-r from-[#ffaa40] to-[#9c40ff]" />
-          Build custom path
+          {translate("Build custom path")}
         </Button>
       </div>
 
       <div className="border-b border-border px-4 py-3.5">
         <p className="pb-2.5 text-[13px] font-semibold text-foreground">
-          Advanced
+          {translate("Advanced")}
         </p>
         <div className="flex flex-col gap-2">
-          <Row label="Start">
+          <Row label={translate("Start")}>
             <ColorField
-              label="Animation start color"
+              label={translate("Animation start color")}
               value={currentPrimary}
               disabled={!hasBeam}
               onChange={(color) => {
@@ -1598,9 +1610,9 @@ export function AnimationOptions() {
               }}
             />
           </Row>
-          <Row label="End">
+          <Row label={translate("End")}>
             <ColorField
-              label="Animation end color"
+              label={translate("Animation end color")}
               value={currentSecondary}
               disabled={!hasBeam}
               onChange={(color) => {
@@ -1615,8 +1627,8 @@ export function AnimationOptions() {
             />
           </Row>
           <ValueRow
-            label="Width"
-            ariaLabel="Animation width"
+            label={translate("Width")}
+            ariaLabel={translate("Animation width")}
             state={summary.width}
             min={0.5}
             max={24}
@@ -1627,8 +1639,8 @@ export function AnimationOptions() {
             }
           />
           <ValueRow
-            label="Length"
-            ariaLabel="Animation beam length"
+            label={translate("Length")}
+            ariaLabel={translate("Animation beam length")}
             state={summary.beamLength}
             min={8}
             max={240}
@@ -1645,8 +1657,8 @@ export function AnimationOptions() {
             }
           />
           <ValueRow
-            label="Opacity"
-            ariaLabel="Animation opacity"
+            label={translate("Opacity")}
+            ariaLabel={translate("Animation opacity")}
             state={summary.opacity}
             min={0}
             max={1}
@@ -1659,8 +1671,8 @@ export function AnimationOptions() {
             }
           />
           <ValueRow
-            label="Glow"
-            ariaLabel="Animation glow"
+            label={translate("Glow")}
+            ariaLabel={translate("Animation glow")}
             state={summary.glow}
             min={0}
             max={32}

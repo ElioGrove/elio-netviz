@@ -19,11 +19,11 @@ describe("inspector layout", () => {
       new URL("../src/components/inspector.tsx", import.meta.url)
     ).text();
     expect(source).toContain("<VideoSettings />");
-    expect(source).toContain('placeholder="Current animation name"');
-    expect(source).toContain('ariaLabel="Start delay"');
-    expect(source).toContain('ariaLabel="Between animations delay"');
-    expect(source).toContain('ariaLabel="End delay"');
-    expect(source).toContain('label="Camera follow"');
+    expect(source).toContain('placeholder={translate("Current animation name")}');
+    expect(source).toContain('ariaLabel={translate("Start delay")}');
+    expect(source).toContain('ariaLabel={translate("Between animations delay")}');
+    expect(source).toContain('ariaLabel={translate("End delay")}');
+    expect(source).toContain('label={translate("Camera follow")}');
     expect(source).toContain("max={10_000}");
     expect(source).toContain("videoTitle");
     expect(source).toContain("videoStartDelayMs");

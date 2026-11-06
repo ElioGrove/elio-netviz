@@ -27,6 +27,6 @@ describe("block border radius", () => {
       inspector.indexOf("function TextEditor")
     );
 
-    expect(stepEditor).toContain('label="Radius"');
+    expect(stepEditor).toContain('label={translate("Radius")}');
   });
 });

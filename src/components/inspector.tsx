@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import {
   memo,
   useCallback,
@@ -71,6 +72,7 @@ import {
 } from "@/lib/line-geometry";
 
 function VideoSettings() {
+  useLocale();
   const videoTitle = useFlowStore((state) => state.videoTitle);
   const videoStartDelayMs = useFlowStore(
     (state) => state.videoStartDelayMs
@@ -98,44 +100,44 @@ function VideoSettings() {
 
   return (
     <>
-      <Section title="Presentation">
-        <Row label="Title">
+      <Section title={translate("Presentation")}>
+        <Row label={translate("Title")}>
           <FieldInput
             value={videoTitle}
             onChange={(event) => setVideoTitle(event.target.value)}
-            placeholder="Current animation name"
-            aria-label="Video title"
+            placeholder={translate("Current animation name")}
+            aria-label={translate("Video title")}
           />
         </Row>
       </Section>
-      <Section title="Delay">
+      <Section title={translate("Delay")}>
         <VideoDelayRow
-          label="Start"
-          ariaLabel="Start delay"
+          label={translate("Start")}
+          ariaLabel={translate("Start delay")}
           value={videoStartDelayMs}
           onChange={setVideoStartDelayMs}
         />
         <VideoDelayRow
-          label="Between"
-          ariaLabel="Between animations delay"
+          label={translate("Between")}
+          ariaLabel={translate("Between animations delay")}
           value={videoBetweenDelayMs}
           onChange={setVideoBetweenDelayMs}
         />
         <VideoDelayRow
-          label="End"
-          ariaLabel="End delay"
+          label={translate("End")}
+          ariaLabel={translate("End delay")}
           value={videoEndDelayMs}
           onChange={setVideoEndDelayMs}
         />
       </Section>
-      <Section title="Camera">
-        <Row label="Follow">
+      <Section title={translate("Camera")}>
+        <Row label={translate("Follow")}>
           <Picker
-            label="Camera follow"
+            label={translate("Camera follow")}
             value={videoCameraFollowEnabled ? "enabled" : "disabled"}
             options={[
-              { value: "enabled", label: "Enabled" },
-              { value: "disabled", label: "Disabled" },
+              { value: "enabled", label: translate("Enabled") },
+              { value: "disabled", label: translate("Disabled") },
             ]}
             onChange={(value) =>
               setVideoCameraFollowEnabled(value === "enabled")
@@ -144,8 +146,8 @@ function VideoSettings() {
         </Row>
         <p className="text-xs font-medium leading-[18px] text-foreground/70">
           {videoCameraFollowEnabled
-            ? "The canvas follows the active request when the full diagram does not fit onscreen."
-            : "Keeps your saved zoom and canvas position during playback."}
+            ? translate("The canvas follows the active request when the full diagram does not fit onscreen.")
+            : translate("Keeps your saved zoom and canvas position during playback.")}
         </p>
       </Section>
     </>
@@ -212,6 +214,7 @@ const NODE_TYPE_LABEL: Record<string, string> = {
 };
 
 export function Inspector() {
+  useLocale();
   const workMode = useFlowStore((s) => s.workMode);
   const selectedProjection = useFlowStore(
     useShallow((s) => {
@@ -237,18 +240,18 @@ export function Inspector() {
       <aside className="flex h-full w-72 shrink-0 flex-col border-l border-border bg-background">
         <div className="border-b border-border px-4 py-3">
           <p className="text-[13px] font-semibold text-foreground">
-            {isVideo ? "Video" : "Animation"}
+            {isVideo ? translate("Video") : translate("Animation")}
           </p>
           <p className="pt-0.5 text-xs font-medium leading-[18px] text-foreground/70">
             {isVideo
-              ? "Presentation playback and camera controls"
+              ? translate("Presentation playback and camera controls")
               : isBuildingAnimationPath
-              ? "Pick blocks in order"
+              ? translate("Pick blocks in order")
               : hasSelectedEdge
-              ? "Connection effect"
+              ? translate("Connection effect")
               : selectedNode
-                ? "Build a chained request"
-                : "All connections"}
+                ? translate("Build a chained request")
+                : translate("All connections")}
           </p>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto">
@@ -283,25 +286,25 @@ export function Inspector() {
         <div className="flex-1 overflow-y-auto pb-4">
           <div className="border-b border-border px-4 py-3">
             <p className="text-xs font-semibold text-foreground">
-              {NODE_TYPE_LABEL[selectedNode.type ?? ""] ?? "Layer"}
+              {translate(NODE_TYPE_LABEL[selectedNode.type ?? ""] ?? "Layer")}
             </p>
           </div>
           <NodeEditor node={selectedNode} />
-          <Section title="Arrange">
+          <Section title={translate("Arrange")}>
             <LayerRow id={selectedNode.id} />
           </Section>
         </div>
       ) : hasSelectedEdge ? (
         <>
           <div className="px-4 pb-1 pt-3">
-            <p className="text-xs font-semibold text-foreground">Edge</p>
+            <p className="text-xs font-semibold text-foreground">{translate("Edge")}</p>
           </div>
           <CanvasOptions />
         </>
       ) : (
         <>
           <div className="px-4 pb-1 pt-3">
-            <p className="text-xs font-semibold text-foreground">Page</p>
+            <p className="text-xs font-semibold text-foreground">{translate("Page")}</p>
           </div>
           <PageOptions />
         </>
@@ -364,6 +367,7 @@ function NumberField({
   format?: (v: number) => string;
   disabled?: boolean;
 }) {
+  useLocale();
   const [draft, setDraft] = useState<string | null>(null);
   const commit = () => {
     if (draft === null) return;
@@ -397,7 +401,7 @@ function NumberField({
         }
       }}
       className="h-7 w-11 shrink-0 rounded-md bg-input px-1.5 text-right text-[11px] tabular-nums text-foreground outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-      aria-label="Value"
+      aria-label={translate("Value")}
     />
   );
 }
@@ -625,6 +629,7 @@ function MiniSwatch({
   active: boolean;
   onClick: () => void;
 }) {
+  useLocale();
   const isNone = p.hex === null;
   const isTransparent = p.hex === "transparent";
   const style: React.CSSProperties = {};
@@ -638,8 +643,8 @@ function MiniSwatch({
     <button
       type="button"
       onClick={onClick}
-      title={p.label}
-      aria-label={p.label}
+      title={translate(p.label)}
+      aria-label={translate(p.label)}
       className={cn(
         "flex h-6 w-6 items-center justify-center rounded-[5px] ring-1 ring-inset ring-foreground/10 transition-transform hover:scale-110",
         isNone && "bg-muted",
@@ -663,6 +668,7 @@ function ColorControl({
   presets?: { id: string; hex: string | null; label: string }[];
   onChange: (v: string | undefined) => void;
 }) {
+  useLocale();
   const [hexDraft, setHexDraft] = useState<string | null>(null);
   const isMatrix = !presets;
   const customValue = value && value !== "transparent" ? value : "#808080";
@@ -743,14 +749,14 @@ function ColorControl({
             <label
               className="relative block h-5 w-5 shrink-0 cursor-pointer overflow-hidden rounded border border-foreground/15"
               style={{ backgroundColor: customValue }}
-              title="Custom color"
+              title={translate("Custom color")}
             >
               <input
                 type="color"
                 value={customValue}
                 onChange={(e) => onChange(e.target.value)}
                 className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                aria-label="Custom color"
+                aria-label={translate("Custom color")}
               />
             </label>
             <input
@@ -779,10 +785,10 @@ function ColorControl({
                   setHexDraft(null);
                 }
               }}
-              placeholder="Custom hex…"
+              placeholder={translate("Custom hex…")}
               spellCheck={false}
               className="min-w-0 flex-1 bg-transparent text-xs uppercase tabular-nums text-foreground outline-none placeholder:normal-case placeholder:text-muted-foreground/60"
-              aria-label="Hex value"
+              aria-label={translate("Hex value")}
             />
           </div>
         </div>
@@ -856,6 +862,7 @@ function IconControl({
   value: string;
   onChange: (name: string) => void;
 }) {
+  useLocale();
   // Stored names can be legacy aliases (e.g. "server") — compare and
   // display via the canonical catalog name.
   const canonical = canonicalIconName(value);
@@ -870,7 +877,7 @@ function IconControl({
           ) : (
             <X className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
           )}
-          <span className="truncate">{canonical || "None"}</span>
+          <span className="truncate">{canonical || translate("None")}</span>
         </>
       }
     >
@@ -899,18 +906,19 @@ function NodeEditor({ node }: { node: AppNode }) {
 }
 
 function LayerRow({ id }: { id: string }) {
+  useLocale();
   const bringToFront = useFlowStore((s) => s.bringToFront);
   const bringForward = useFlowStore((s) => s.bringForward);
   const sendBackward = useFlowStore((s) => s.sendBackward);
   const sendToBack = useFlowStore((s) => s.sendToBack);
   const actions = [
-    { icon: ChevronsUp, title: "Bring to front", fn: () => bringToFront(id) },
-    { icon: ChevronUp, title: "Bring forward", fn: () => bringForward(id) },
-    { icon: ChevronDown, title: "Send backward", fn: () => sendBackward(id) },
-    { icon: ChevronsDown, title: "Send to back", fn: () => sendToBack(id) },
+    { icon: ChevronsUp, title: translate("Bring to front"), fn: () => bringToFront(id) },
+    { icon: ChevronUp, title: translate("Bring forward"), fn: () => bringForward(id) },
+    { icon: ChevronDown, title: translate("Send backward"), fn: () => sendBackward(id) },
+    { icon: ChevronsDown, title: translate("Send to back"), fn: () => sendToBack(id) },
   ];
   return (
-    <Row label="Order">
+    <Row label={translate("Order")}>
       {actions.map((a) => {
         const Ic = a.icon;
         return (
@@ -918,8 +926,8 @@ function LayerRow({ id }: { id: string }) {
             key={a.title}
             type="button"
             onClick={a.fn}
-            title={a.title}
-            aria-label={a.title}
+            title={translate(a.title)}
+            aria-label={translate(a.title)}
             className="flex h-7 flex-1 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             <Ic className="h-3.5 w-3.5" />
@@ -931,7 +939,7 @@ function LayerRow({ id }: { id: string }) {
 }
 
 function AccentRow({
-  label = "Color",
+  label = translate("Color"),
   value,
   onChange,
 }: {
@@ -939,6 +947,7 @@ function AccentRow({
   value: Accent;
   onChange: (a: Accent) => void;
 }) {
+  useLocale();
   return (
     <Row label={label}>
       <AccentControl value={value} onChange={onChange} />
@@ -958,6 +967,7 @@ function PresetButton({
   active: boolean;
   onClick: () => void;
 }) {
+  useLocale();
   const isNone = p.hex === null;
   const isTransparent = p.hex === "transparent";
   const style: React.CSSProperties = {};
@@ -971,8 +981,8 @@ function PresetButton({
     <button
       type="button"
       onClick={onClick}
-      title={p.label}
-      aria-label={p.label}
+      title={translate(p.label)}
+      aria-label={translate(p.label)}
       className={cn(
         "flex h-6 w-6 items-center justify-center rounded-md transition-shadow",
         isNone && "bg-muted",
@@ -995,10 +1005,11 @@ type ColorTarget = {
 // Framer-style: one row per color target, each a [swatch + value]
 // dropdown control.
 function ColorsSection({ targets }: { targets: ColorTarget[] }) {
+  useLocale();
   return (
-    <Section title="Colors">
+    <Section title={translate("Colors")}>
       {targets.map((t) => (
-        <Row key={t.key} label={t.label}>
+        <Row key={t.key} label={translate(t.label)}>
           <ColorControl value={t.value} onChange={t.onChange} />
         </Row>
       ))}
@@ -1019,6 +1030,7 @@ const IconPicker = memo(function IconPicker({
   onChange: (name: string) => void;
   onClose?: () => void;
 }) {
+  useLocale();
   const [query, setQuery] = useState("");
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -1040,13 +1052,13 @@ const IconPicker = memo(function IconPicker({
   return (
     <div className="flex flex-col gap-2 p-1">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-foreground">Icons</p>
+        <p className="text-xs font-semibold text-foreground">{translate("Icons")}</p>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
             className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground"
-            aria-label="Close icon picker"
+            aria-label={translate("Close icon picker")}
           >
             <X className="h-3 w-3" />
           </button>
@@ -1058,7 +1070,7 @@ const IconPicker = memo(function IconPicker({
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search…"
+          placeholder={translate("Search…")}
           className="h-7 pl-7 text-xs"
         />
       </div>
@@ -1067,8 +1079,8 @@ const IconPicker = memo(function IconPicker({
           type="button"
           onClick={() => onChange("")}
           className={tile(value === "")}
-          title="None"
-          aria-label="No icon"
+          title={translate("None")}
+          aria-label={translate("No icon")}
         >
           <X className="h-4 w-4" />
         </button>
@@ -1089,12 +1101,11 @@ const IconPicker = memo(function IconPicker({
         })}
         {filtered.length > shown.length && (
           <p className="col-span-4 px-2 py-1.5 text-center text-[10px] text-muted-foreground/70">
-            +{filtered.length - shown.length} more — search to narrow
-          </p>
+            +{filtered.length - shown.length} {translate("more — search to narrow")}</p>
         )}
         {filtered.length === 0 && (
           <p className="col-span-4 px-2 py-4 text-center text-xs text-muted-foreground">
-            No icons match.
+            {translate("No icons match.")}
           </p>
         )}
       </div>
@@ -1109,6 +1120,7 @@ function CustomIconRow({
   value: string | undefined;
   onChange: (v: string | undefined) => void;
 }) {
+  useLocale();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
@@ -1120,7 +1132,7 @@ function CustomIconRow({
   };
 
   return (
-    <Row label="Image">
+    <Row label={translate("Image")}>
       <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
         {value ? (
           <img src={value} alt="" className="h-full w-full object-cover" />
@@ -1134,14 +1146,14 @@ function CustomIconRow({
         className="h-7 flex-1 text-[11px]"
         onClick={() => inputRef.current?.click()}
       >
-        {value ? "Replace" : "Upload"}
+        {value ? "Replace" : translate("Upload")}
       </Button>
       {value ? (
         <button
           onClick={() => onChange(undefined)}
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          title="Remove custom icon"
-          aria-label="Remove custom icon"
+          title={translate("Remove custom icon")}
+          aria-label={translate("Remove custom icon")}
         >
           <X className="h-3 w-3" />
         </button>
@@ -1194,6 +1206,7 @@ const CODE_LANGUAGES: CodeLanguage[] = [
 ];
 
 function InfraEditor({ node }: { node: InfraNode }) {
+  useLocale();
   const customBlocks = useFlowStore((s) => s.customBlocks);
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   const setInfraShape = useFlowStore((s) => s.setInfraShape);
@@ -1211,22 +1224,22 @@ function InfraEditor({ node }: { node: InfraNode }) {
   return (
     <>
       <Section>
-        <Row label="Title">
+        <Row label={translate("Title")}>
           <FieldInput
             value={node.data.label}
             onChange={(e) => updateNodeData(node.id, { label: e.target.value })}
           />
         </Row>
-        <Row label="Info">
+        <Row label={translate("Info")}>
           <FieldInput
             value={node.data.subtitle ?? ""}
             onChange={(e) =>
               updateNodeData(node.id, { subtitle: e.target.value })
             }
-            placeholder="Optional"
+            placeholder={translate("Optional")}
           />
         </Row>
-        <Row label="Align">
+        <Row label={translate("Align")}>
           <Segmented
             className="flex-1"
             value={textAlign}
@@ -1239,15 +1252,15 @@ function InfraEditor({ node }: { node: InfraNode }) {
           />
         </Row>
       </Section>
-      <Section title="Icon">
-        <Row label="Icon">
+      <Section title={translate("Icon")}>
+        <Row label={translate("Icon")}>
           <IconControl value={iconName} onChange={onIconChange} />
         </Row>
         <CustomIconRow
           value={node.data.customIcon}
           onChange={(v) => updateNodeData(node.id, { customIcon: v })}
         />
-        <Row label="Position">
+        <Row label={translate("Position")}>
           <Segmented
             className="flex-1"
             value={iconPosition}
@@ -1260,21 +1273,21 @@ function InfraEditor({ node }: { node: InfraNode }) {
           />
         </Row>
       </Section>
-      <Section title="Style">
-        <Row label="Shape">
+      <Section title={translate("Style")}>
+        <Row label={translate("Shape")}>
           <Segmented<InfraShape>
             className="flex-1"
             value={node.data.shape ?? "square"}
             onChange={(shape) => setInfraShape(node.id, shape)}
             options={[
-              { value: "square", label: "Square" },
-              { value: "circle", label: "Circle" },
+              { value: "square", label: translate("Square") },
+              { value: "circle", label: translate("Circle") },
             ]}
           />
         </Row>
         {node.data.shape !== "circle" && (
         <SliderRow
-          label="Radius"
+          label={translate("Radius")}
           value={node.data.borderRadius ?? 12}
           min={0}
           max={48}
@@ -1282,7 +1295,7 @@ function InfraEditor({ node }: { node: InfraNode }) {
         />
         )}
         <SliderRow
-          label="Border"
+          label={translate("Border")}
           value={node.data.borderWidth ?? 1}
           min={0}
           max={8}
@@ -1291,11 +1304,11 @@ function InfraEditor({ node }: { node: InfraNode }) {
       </Section>
       <ColorsSection
         targets={[
-          { key: "bg", label: "Background", value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
-          { key: "icon", label: "Icon", value: node.data.iconColor, onChange: (v) => updateNodeData(node.id, { iconColor: v }) },
-          { key: "title", label: "Title", value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
-          { key: "desc", label: "Info", value: node.data.subtitleColor, onChange: (v) => updateNodeData(node.id, { subtitleColor: v }) },
-          { key: "border", label: "Border", value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
+          { key: "bg", label: translate("Background"), value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
+          { key: "icon", label: translate("Icon"), value: node.data.iconColor, onChange: (v) => updateNodeData(node.id, { iconColor: v }) },
+          { key: "title", label: translate("Title"), value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
+          { key: "desc", label: translate("Info"), value: node.data.subtitleColor, onChange: (v) => updateNodeData(node.id, { subtitleColor: v }) },
+          { key: "border", label: translate("Border"), value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
         ]}
       />
     </>
@@ -1305,16 +1318,17 @@ function InfraEditor({ node }: { node: InfraNode }) {
 const BORDER_STYLES: BorderStyle[] = ["solid", "dashed", "dotted"];
 
 function ShapeEditor({ node }: { node: ShapeNode }) {
+  useLocale();
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   const isRectangle = node.data.shape === "rectangle";
   return (
     <>
       <Section>
-        <Row label="Label">
+        <Row label={translate("Label")}>
           <FieldInput
             value={node.data.label ?? ""}
             onChange={(e) => updateNodeData(node.id, { label: e.target.value })}
-            placeholder="Optional"
+            placeholder={translate("Optional")}
           />
         </Row>
         <AccentRow
@@ -1322,9 +1336,9 @@ function ShapeEditor({ node }: { node: ShapeNode }) {
           onChange={(a) => updateNodeData(node.id, { accent: a })}
         />
       </Section>
-      <Section title="Style">
+      <Section title={translate("Style")}>
         {isRectangle && (
-          <Row label="Border">
+          <Row label={translate("Border")}>
             <Segmented
               className="flex-1"
               value={node.data.borderStyle ?? "dashed"}
@@ -1338,7 +1352,7 @@ function ShapeEditor({ node }: { node: ShapeNode }) {
         )}
         {isRectangle && (
           <SliderRow
-            label="Radius"
+            label={translate("Radius")}
             value={node.data.borderRadius ?? 12}
             min={0}
             max={48}
@@ -1348,9 +1362,9 @@ function ShapeEditor({ node }: { node: ShapeNode }) {
       </Section>
       <ColorsSection
         targets={[
-          { key: "bg", label: "Background", value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
-          { key: "label", label: "Label", value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
-          { key: "border", label: "Border", value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
+          { key: "bg", label: translate("Background"), value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
+          { key: "label", label: translate("Label"), value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
+          { key: "border", label: translate("Border"), value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
         ]}
       />
     </>
@@ -1358,11 +1372,12 @@ function ShapeEditor({ node }: { node: ShapeNode }) {
 }
 
 function StepEditor({ node }: { node: StepNode }) {
+  useLocale();
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   return (
     <>
       <Section>
-        <Row label="Number">
+        <Row label={translate("Number")}>
           <FieldInput
             type="number"
             value={node.data.step}
@@ -1378,9 +1393,9 @@ function StepEditor({ node }: { node: StepNode }) {
           onChange={(a) => updateNodeData(node.id, { accent: a })}
         />
       </Section>
-      <Section title="Style">
+      <Section title={translate("Style")}>
         <SliderRow
-          label="Radius"
+          label={translate("Radius")}
           value={node.data.borderRadius ?? 28}
           min={0}
           max={48}
@@ -1391,9 +1406,9 @@ function StepEditor({ node }: { node: StepNode }) {
       </Section>
       <ColorsSection
         targets={[
-          { key: "bg", label: "Background", value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
-          { key: "number", label: "Number", value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
-          { key: "border", label: "Border", value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
+          { key: "bg", label: translate("Background"), value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
+          { key: "number", label: translate("Number"), value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
+          { key: "border", label: translate("Border"), value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
         ]}
       />
     </>
@@ -1401,6 +1416,7 @@ function StepEditor({ node }: { node: StepNode }) {
 }
 
 function TextEditor({ node }: { node: TextNode }) {
+  useLocale();
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   return (
     <>
@@ -1410,10 +1426,10 @@ function TextEditor({ node }: { node: TextNode }) {
           onChange={(e) => updateNodeData(node.id, { text: e.target.value })}
           rows={3}
           className="flex w-full rounded-lg bg-input px-2.5 py-2 text-xs placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label="Text content"
+          aria-label={translate("Text content")}
         />
         <SliderRow
-          label="Size"
+          label={translate("Size")}
           value={node.data.fontSize ?? 14}
           min={10}
           max={64}
@@ -1424,8 +1440,8 @@ function TextEditor({ node }: { node: TextNode }) {
           onChange={(a) => updateNodeData(node.id, { accent: a })}
         />
       </Section>
-      <Section title="Style">
-        <Row label="Fill">
+      <Section title={translate("Style")}>
+        <Row label={translate("Fill")}>
           <Segmented
             className="flex-1"
             value={node.data.bgColor !== "transparent" ? "on" : "off"}
@@ -1435,13 +1451,13 @@ function TextEditor({ node }: { node: TextNode }) {
               })
             }
             options={[
-              { value: "on", label: "Yes" },
-              { value: "off", label: "No" },
+              { value: "on", label: translate("Yes") },
+              { value: "off", label: translate("No") },
             ]}
           />
         </Row>
         <SliderRow
-          label="Radius"
+          label={translate("Radius")}
           value={node.data.borderRadius ?? 6}
           min={0}
           max={48}
@@ -1450,8 +1466,8 @@ function TextEditor({ node }: { node: TextNode }) {
       </Section>
       <ColorsSection
         targets={[
-          { key: "bg", label: "Background", value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
-          { key: "text", label: "Text", value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
+          { key: "bg", label: translate("Background"), value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
+          { key: "text", label: translate("Text"), value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
         ]}
       />
     </>
@@ -1459,18 +1475,19 @@ function TextEditor({ node }: { node: TextNode }) {
 }
 
 function CodeEditor({ node }: { node: CodeNode }) {
+  useLocale();
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   return (
     <>
       <Section>
-        <Row label="Title">
+        <Row label={translate("Title")}>
           <FieldInput
             value={node.data.label ?? ""}
             onChange={(e) => updateNodeData(node.id, { label: e.target.value })}
-            placeholder="Optional"
+            placeholder={translate("Optional")}
           />
         </Row>
-        <Row label="Language">
+        <Row label={translate("Language")}>
           <select
             value={node.data.language}
             onChange={(e) =>
@@ -1479,7 +1496,7 @@ function CodeEditor({ node }: { node: CodeNode }) {
               })
             }
             className="h-7 w-full flex-1 rounded-lg bg-input px-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            aria-label="Language"
+            aria-label={translate("Language")}
           >
             {CODE_LANGUAGES.map((l) => (
               <option key={l} value={l}>
@@ -1493,12 +1510,12 @@ function CodeEditor({ node }: { node: CodeNode }) {
           onChange={(e) => updateNodeData(node.id, { code: e.target.value })}
           spellCheck={false}
           className="flex min-h-[160px] w-full rounded-lg bg-input px-2.5 py-2 font-mono text-xs leading-relaxed placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label="Code"
+          aria-label={translate("Code")}
         />
       </Section>
-      <Section title="Style">
+      <Section title={translate("Style")}>
         <SliderRow
-          label="Radius"
+          label={translate("Radius")}
           value={node.data.borderRadius ?? 8}
           min={0}
           max={48}
@@ -1507,9 +1524,9 @@ function CodeEditor({ node }: { node: CodeNode }) {
       </Section>
       <ColorsSection
         targets={[
-          { key: "bg", label: "Background", value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
-          { key: "title", label: "Title", value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
-          { key: "border", label: "Border", value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
+          { key: "bg", label: translate("Background"), value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
+          { key: "title", label: translate("Title"), value: node.data.titleColor, onChange: (v) => updateNodeData(node.id, { titleColor: v }) },
+          { key: "border", label: translate("Border"), value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
         ]}
       />
     </>
@@ -1531,12 +1548,13 @@ function ImageFitControl({
   value: ImageFit;
   onChange: (value: ImageFit) => void;
 }) {
+  useLocale();
   const current = IMAGE_FITS.find((option) => option.value === value);
   return (
     <PopoverControl
-      aria-label="Image fit"
+      aria-label={translate("Image fit")}
       panelWidth={160}
-      trigger={<span className="truncate">{current?.label ?? "Fit"}</span>}
+      trigger={<span className="truncate">{translate(current?.label ?? "Fit")}</span>}
     >
       {(close) => (
         <div className="flex flex-col gap-0.5">
@@ -1555,7 +1573,7 @@ function ImageFitControl({
                   : "text-muted-foreground"
               )}
             >
-              {option.label}
+              {translate(option.label)}
             </button>
           ))}
         </div>
@@ -1565,6 +1583,7 @@ function ImageFitControl({
 }
 
 function ImageEditor({ node }: { node: ImageNode }) {
+  useLocale();
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -1577,15 +1596,15 @@ function ImageEditor({ node }: { node: ImageNode }) {
 
   return (
     <>
-      <Section title="Image">
-        <Row label="Source">
+      <Section title={translate("Image")}>
+        <Row label={translate("Source")}>
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
             className="flex h-7 flex-1 items-center justify-center gap-1.5 rounded-md bg-input px-2 text-xs font-medium text-foreground transition-colors hover:bg-muted"
           >
             <Upload className="h-3.5 w-3.5" />
-            Replace image
+            {translate("Replace image")}
           </button>
           <input
             ref={fileRef}
@@ -1599,29 +1618,29 @@ function ImageEditor({ node }: { node: ImageNode }) {
             }}
           />
         </Row>
-        <Row label="Fit">
+        <Row label={translate("Fit")}>
           <ImageFitControl
             value={node.data.fit ?? "contain"}
             onChange={(fit) => updateNodeData(node.id, { fit })}
           />
         </Row>
         <SliderRow
-          label="Scale"
+          label={translate("Scale")}
           value={node.data.scale ?? 100}
           min={25}
           max={300}
           onChange={(scale) => updateNodeData(node.id, { scale })}
         />
         <SliderRow
-          label="Opacity"
+          label={translate("Opacity")}
           value={node.data.opacity ?? 100}
           min={0}
           max={100}
           onChange={(opacity) => updateNodeData(node.id, { opacity })}
         />
       </Section>
-      <Section title="Border">
-        <Row label="Style">
+      <Section title={translate("Border")}>
+        <Row label={translate("Style")}>
           <Segmented
             className="flex-1"
             value={node.data.borderStyle ?? "solid"}
@@ -1635,7 +1654,7 @@ function ImageEditor({ node }: { node: ImageNode }) {
           />
         </Row>
         <SliderRow
-          label="Border width"
+          label={translate("Border width")}
           value={node.data.borderWidth ?? 1}
           min={0}
           max={12}
@@ -1644,7 +1663,7 @@ function ImageEditor({ node }: { node: ImageNode }) {
           }
         />
         <SliderRow
-          label="Radius"
+          label={translate("Radius")}
           value={node.data.borderRadius ?? 8}
           min={0}
           max={48}
@@ -1653,8 +1672,8 @@ function ImageEditor({ node }: { node: ImageNode }) {
       </Section>
       <ColorsSection
         targets={[
-          { key: "bg", label: "Background", value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
-          { key: "border", label: "Border", value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
+          { key: "bg", label: translate("Background"), value: node.data.bgColor, onChange: (v) => updateNodeData(node.id, { bgColor: v }) },
+          { key: "border", label: translate("Border"), value: node.data.borderColor, onChange: (v) => updateNodeData(node.id, { borderColor: v }) },
         ]}
       />
     </>
@@ -1678,6 +1697,7 @@ function ArrowShapeRow({
   value: ArrowShape;
   onChange: (v: ArrowShape) => void;
 }) {
+  useLocale();
   return (
     <Row label={label}>
       <div className="flex flex-wrap gap-1">
@@ -1688,8 +1708,8 @@ function ArrowShapeRow({
               key={s.id}
               type="button"
               onClick={() => onChange(s.id)}
-              title={s.label}
-              aria-label={s.label}
+              title={translate(s.label)}
+              aria-label={translate(s.label)}
               className={cn(
                 "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
                 active
@@ -1729,6 +1749,7 @@ const LINE_STROKE_PRESETS: { id: string; hex: string | null; label: string }[] =
 ];
 
 function LineEditor({ node }: { node: LineNode }) {
+  useLocale();
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
   const updateLineGeometry = useFlowStore((s) => s.updateLineGeometry);
   const width =
@@ -1782,7 +1803,7 @@ function LineEditor({ node }: { node: LineNode }) {
     <>
       <Section>
         <SliderRow
-          label="Rotate"
+          label={translate("Rotate")}
           value={rotation}
           min={0}
           max={359}
@@ -1790,7 +1811,7 @@ function LineEditor({ node }: { node: LineNode }) {
           disabled={rotationDisabled}
         />
         <SliderRow
-          label="Curve"
+          label={translate("Curve")}
           value={curvature}
           min={-1}
           max={1}
@@ -1798,7 +1819,7 @@ function LineEditor({ node }: { node: LineNode }) {
           onChange={(v) => updateNodeData(node.id, { curvature: v })}
           format={(v) => v.toFixed(2)}
         />
-        <Row label="Style">
+        <Row label={translate("Style")}>
           <Segmented
             className="flex-1"
             value={dashed ? "dashed" : "solid"}
@@ -1806,21 +1827,21 @@ function LineEditor({ node }: { node: LineNode }) {
               updateNodeData(node.id, { dashed: v === "dashed" })
             }
             options={[
-              { value: "solid", label: "Solid" },
-              { value: "dashed", label: "Dashed" },
+              { value: "solid", label: translate("Solid") },
+              { value: "dashed", label: translate("Dashed") },
             ]}
           />
         </Row>
         <SliderRow
-          label="Width"
+          label={translate("Width")}
           value={strokeWidth}
           min={1}
           max={12}
           onChange={(v) => updateNodeData(node.id, { strokeWidth: v })}
         />
       </Section>
-      <Section title="Arrows">
-        <Row label="Ends">
+      <Section title={translate("Arrows")}>
+        <Row label={translate("Ends")}>
           <button
             type="button"
             onClick={() =>
@@ -1833,7 +1854,7 @@ function LineEditor({ node }: { node: LineNode }) {
                 : "bg-muted text-muted-foreground hover:text-foreground"
             )}
           >
-            Start
+            {translate("Start")}
           </button>
           <button
             type="button"
@@ -1845,26 +1866,26 @@ function LineEditor({ node }: { node: LineNode }) {
                 : "bg-muted text-muted-foreground hover:text-foreground"
             )}
           >
-            End
+            {translate("End")}
           </button>
         </Row>
         {arrowStart && (
           <ArrowShapeRow
-            label="Start"
+            label={translate("Start")}
             value={arrowStartShape}
             onChange={(v) => updateNodeData(node.id, { arrowStartShape: v })}
           />
         )}
         {arrowEnd && (
           <ArrowShapeRow
-            label="End"
+            label={translate("End")}
             value={arrowEndShape}
             onChange={(v) => updateNodeData(node.id, { arrowEndShape: v })}
           />
         )}
       </Section>
-      <Section title="Stroke">
-        <Row label="Color">
+      <Section title={translate("Stroke")}>
+        <Row label={translate("Color")}>
           <ColorControl
             value={strokeColor}
             presets={LINE_STROKE_PRESETS}

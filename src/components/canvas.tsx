@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import {
   useCallback,
   useEffect,
@@ -567,6 +568,7 @@ function PresentationViewportOverlay({
   nodes: readonly AppNode[];
   edges: readonly LabeledEdgeModel[];
 }) {
+  useLocale();
   const { getViewport, setViewport } = useReactFlow();
   const [transport, setTransport] = useState(
     scenarioRuntime.getTransportSnapshot()
@@ -707,13 +709,14 @@ function PresentationViewportOverlay({
       <p className="truncate text-[13px] font-semibold text-foreground">
         {videoTitle.trim() ||
           scenarioRuntime.getActiveAnimationName() ||
-          "No animation selected"}
+          translate("No animation selected")}
       </p>
     </div>
   );
 }
 
 function CanvasInner() {
+  useLocale();
   const nodes = useFlowStore((s) => s.nodes);
   const edges = useFlowStore((s) => s.edges);
   const onNodesChange = useFlowStore((s) => s.onNodesChange);
@@ -1177,7 +1180,7 @@ function CanvasInner() {
         deleteKeyCode={
           isPlaybackOnly || isPickingAnimationPath
             ? null
-            : ["Backspace", "Delete"]
+            : ["Backspace", translate("Delete")]
         }
         onlyRenderVisibleElements={!renderAll && !isVideoPresentation}
         elevateNodesOnSelect={false}
@@ -1194,7 +1197,7 @@ function CanvasInner() {
       />
       {isPickingAnimationPath ? (
         <div className="pointer-events-none absolute left-1/2 top-4 z-20 -translate-x-1/2 rounded-full border border-border bg-background/95 px-3 py-1.5 text-[10px] font-medium text-foreground shadow-lg backdrop-blur">
-          Click blocks in request order · Esc to cancel
+          {translate("Click blocks in request order · Esc to cancel")}
         </div>
       ) : null}
       {isDesign &&
@@ -1273,7 +1276,7 @@ function CanvasInner() {
             onMouseDown={(e) => e.stopPropagation()}
           >
             <p className="px-2 pb-1.5 pt-0.5 text-xs font-semibold text-muted-foreground/90">
-              Connect to…
+              {translate("Connect to…")}
             </p>
             <div className="grid min-h-0 flex-1 grid-cols-1 gap-0.5 overflow-y-auto">
               {registry.map((b) => {
@@ -1306,7 +1309,7 @@ function CanvasInner() {
                       )}
                     </span>
                     <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground/80">
-                      {b.label}
+                      {b.builtin ? translate(b.label) : b.label}
                     </span>
                   </button>
                 );

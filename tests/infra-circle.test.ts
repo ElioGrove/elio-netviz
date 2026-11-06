@@ -12,7 +12,7 @@ describe("infra circle display", () => {
     );
 
     expect(editor).toContain('node.data.shape ?? "square"');
-    expect(editor).toContain('{ value: "circle", label: "Circle" }');
+    expect(editor).toContain('{ value: "circle", label: translate("Circle") }');
   });
 
   test("renders the icon in a circle with text outside", async () => {

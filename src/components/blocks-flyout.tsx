@@ -1,3 +1,4 @@
+import { translate, useLocale } from "@/i18n";
 import { useState } from "react";
 import {
   Code2,
@@ -88,7 +89,7 @@ function BlockRow({
       }}
       onClick={onAdd}
       role="button"
-      title={`${label} — click to add, or drag onto the canvas`}
+      title={translate("{label} — click to add, or drag onto the canvas", { label })}
       className="group flex cursor-grab items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted active:cursor-grabbing"
     >
       {children}
@@ -104,7 +105,7 @@ function BlockRow({
             onDelete();
           }}
           className="shrink-0 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-          aria-label={`Delete ${label}`}
+          aria-label={translate("Delete {label}", { label })}
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -131,6 +132,7 @@ type Item = {
 };
 
 export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
+  useLocale();
   const customBlocks = useFlowStore((s) => s.customBlocks);
   const deleteCustomBlock = useFlowStore((s) => s.deleteCustomBlock);
   const addInfraNode = useFlowStore((s) => s.addInfraNode);
@@ -159,7 +161,7 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
 
   const blockItem = (b: BlockDef, onDelete?: () => void): Item => ({
     key: b.id,
-    label: b.label,
+    label: b.builtin ? translate(b.label) : b.label,
     payload: { kind: "infra", blockId: b.id },
     tile: (
       <AccentTile
@@ -193,7 +195,7 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
 
   const templateItems: Item[] = TEMPLATES.map((template) => ({
     key: template.id,
-    label: template.name,
+    label: translate(template.name),
     payload: { kind: "template", templateId: template.id },
     tile: (
       <AccentTile
@@ -213,35 +215,35 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
   const sections: { key: CategoryKey; title: string; items: Item[] }[] = [
     {
       key: "templates",
-      title: "Templates",
+      title: translate("Templates"),
       items: templateItems,
     },
     {
       key: "core",
-      title: "Blocks",
+      title: translate("Blocks"),
       items: CORE_BLOCKS.map((b) => blockItem(b)),
     },
     {
       key: "annotations",
-      title: "Annotations",
+      title: translate("Annotations"),
       items: [
-        annotationItem("text", "Text", Type, "amber", addTextNode),
+        annotationItem("text", translate("Text"), Type, "amber", addTextNode),
         annotationItem(
           "image",
-          "Image",
+          translate("Image"),
           Image,
           "sky",
           (position) =>
             addImageNode("", position, { width: 280, height: 180 }),
           { x: 140, y: 90 }
         ),
-        annotationItem("step", "Step", Hash, "indigo", addStepNode),
-        annotationItem("code", "Code", Code2, "violet", addCodeNode),
+        annotationItem("step", translate("Step"), Hash, "indigo", addStepNode),
+        annotationItem("code", translate("Code"), Code2, "violet", addCodeNode),
       ],
     },
     {
       key: "custom",
-      title: "Custom",
+      title: translate("Custom"),
       items: customBlocks.map((b) =>
         blockItem(b, () => deleteCustomBlock(b.id))
       ),
@@ -249,7 +251,8 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
   ];
 
   const q = query.trim().toLowerCase();
-  const matches = (it: Item) => !q || it.label.toLowerCase().includes(q);
+  const matches = (it: Item) => !q || it.label.toLowerCase().includes(q) ||
+    CORE_BLOCKS.some((block) => block.id === it.key && block.label.toLowerCase().includes(q));
   const visibleSections = sections
     .filter((sec) => filter === "all" || filter === sec.key)
     .map((sec) => ({ ...sec, items: sec.items.filter(matches) }))
@@ -268,15 +271,15 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search…"
+              placeholder={translate("Search…")}
               className="pl-8"
             />
           </div>
           <button
             type="button"
             onClick={() => setDialogOpen(true)}
-            title="New custom block"
-            aria-label="New custom block"
+            title={translate("New custom block")}
+            aria-label={translate("New custom block")}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             <Plus className="h-4 w-4" />
@@ -295,7 +298,7 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              {f.label}
+              {translate(f.label)}
             </button>
           ))}
         </div>
@@ -303,13 +306,13 @@ export function BlocksFlyout({ onAdded }: { onAdded: () => void }) {
       <div className="min-h-0 flex-1 overflow-y-auto border-t border-border px-2 pb-2">
         {visibleSections.length === 0 ? (
           <p className="px-2 py-8 text-center text-xs text-muted-foreground">
-            No blocks match{q ? ` “${query.trim()}”` : ""}.
+            {translate("No blocks match")}{q ? ` “${query.trim()}”` : ""}.
           </p>
         ) : (
           <div className="flex flex-col gap-3 py-2">
             {visibleSections.map((sec) => (
               <section key={sec.key}>
-                <SectionLabel>{sec.title}</SectionLabel>
+                <SectionLabel>{translate(sec.title)}</SectionLabel>
                 <div className="flex flex-col gap-0.5">
                   {sec.items.map((it) => (
                     <BlockRow

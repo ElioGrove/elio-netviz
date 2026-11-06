@@ -1,3 +1,4 @@
+import { useLocaleStore } from "../src/i18n";
 import { beforeEach, describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createEmptyScenarioDocument } from "../src/animation/scenario-document";
@@ -42,6 +43,9 @@ beforeEach(() => {
   temporal.clear();
   temporal.resume();
 });
+
+// Keep existing UI regression expectations explicit about their locale.
+beforeEach(() => useLocaleStore.setState({ locale: "en" }));
 
 describe("AnimationOptions", () => {
   test("offers all-connections and request-chain authoring states", () => {
