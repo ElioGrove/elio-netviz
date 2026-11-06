@@ -39,25 +39,25 @@ npm run dev
 npm run build
 ```
 
-支持 Cloudflare 静态托管，也支持放入 elio-hub 的 `apps/netviz/` 子目录。详细方案见 [静态部署说明](docs/deployment.md)。
+线上地址：[netvix.thus.chat](https://netvix.thus.chat/)。使用 Cloudflare Workers Static Assets 托管，生产分支为 `main`。详细配置见 [部署说明](docs/deployment.md)。
 
 ## Requirements
 
-- Node.js 20 or newer
-- Aube 2.1 or newer
+- Node.js 22 or newer
+- npm (use the committed `package-lock.json`)
 
 ## Local development
 
 Install dependencies:
 
 ```bash
-aube install --frozen-lockfile
+npm ci
 ```
 
 Start the dev server:
 
 ```bash
-aube run dev
+npm run dev
 ```
 
 Open http://localhost:8888 in your browser.
@@ -67,19 +67,19 @@ Open http://localhost:8888 in your browser.
 Create a production build in `dist/`:
 
 ```bash
-aube run build
+npm run build
 ```
 
 Preview the build locally:
 
 ```bash
-aube run preview
+npm run preview
 ```
 
 ## Deploy
 
 ### Option 1: Any static host
-1. Run `aube run build`
+1. Run `npm run build`
 2. The `dist/` folder is a plain static site. Upload it to any static host, that's it.
 
 ### Option 2: Coolify
